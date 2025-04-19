@@ -46,7 +46,7 @@ def start():
         except pkg_resources.DistributionNotFound:
             raise ConfigurationError("Could not find default configuration.")
 
-    print "config file", configfile
+    print("config file", configfile)
     turbogears.update_config(configfile=configfile,
         modulename="micropolis.config")
 

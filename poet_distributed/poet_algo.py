@@ -124,7 +124,7 @@ class MultiESOptimizer:
             theta = np.array(model_params)
         else:
             theta=niche.initial_theta()
-        assert optim_id not in self.optimizers.keys()
+        assert optim_id not in list(self.optimizers.keys())
 
         return ESOptimizer(
             optim_id=optim_id,
@@ -160,8 +160,8 @@ class MultiESOptimizer:
         optim_id = o.optim_id
         self.optimizers[optim_id] = o
 
-        assert optim_id not in self.env_registry.keys()
-        assert optim_id not in self.env_archive.keys()
+        assert optim_id not in list(self.env_registry.keys())
+        assert optim_id not in list(self.env_archive.keys())
         self.env_registry[optim_id] = env
         self.env_archive[optim_id] = env
         #dump the env
@@ -172,11 +172,11 @@ class MultiESOptimizer:
             json.dump(record, f)
 
     def delete_optimizer(self, optim_id):
-        assert optim_id in self.optimizers.keys()
+        assert optim_id in list(self.optimizers.keys())
         #assume optim_id == env_id for single_env niches
         o = self.optimizers.pop(optim_id)
         del o
-        assert optim_id in self.env_registry.keys()
+        assert optim_id in list(self.env_registry.keys())
         self.env_registry.pop(optim_id)
         logger.info('DELETED {} '.format(optim_id))
 
@@ -200,11 +200,11 @@ class MultiESOptimizer:
         #self.client.metadata.clear()
 
     def ind_es_step(self, iteration):
-        tasks = [o.start_step() for o in self.optimizers.values()]
+        tasks = [o.start_step() for o in list(self.optimizers.values())]
        #logger.info('optimizer values: \n {}'.format([(k, v) for k, v in self.optimizers.values().items()]))
         l = 0
         logger.info('tasks: \n {}'.format(len(tasks)))
-        for optimizer, task in zip(self.optimizers.values(), tasks):
+        for optimizer, task in zip(list(self.optimizers.values()), tasks):
             optimizer.theta, stats = optimizer.get_step(task)
             l += 1
             self_eval_task = optimizer.start_theta_eval(optimizer.theta)
@@ -221,9 +221,9 @@ class MultiESOptimizer:
 
     def transfer(self, propose_with_adam, checkpointing, reset_optimizer):
         logger.info('Computing direct transfers...')
-        for source_optim in self.optimizers.values():
+        for source_optim in list(self.optimizers.values()):
             source_tasks = []
-            for target_optim in [o for o in self.optimizers.values()
+            for target_optim in [o for o in list(self.optimizers.values())
                                     if o is not source_optim]:
                 task = target_optim.start_theta_eval(
                     source_optim.theta)
@@ -237,9 +237,9 @@ class MultiESOptimizer:
                     stats=stats, keyword='theta')
 
         logger.info('Computing proposal transfers...')
-        for source_optim in self.optimizers.values():
+        for source_optim in list(self.optimizers.values()):
             source_tasks = []
-            for target_optim in [o for o in self.optimizers.values()
+            for target_optim in [o for o in list(self.optimizers.values())
                                     if o is not source_optim]:
                 task = target_optim.start_step(source_optim.theta)
                 source_tasks.append((task, target_optim))
@@ -256,7 +256,7 @@ class MultiESOptimizer:
                     stats=proposal_eval_stats, keyword='proposal')
 
         logger.info('Considering transfers...')
-        for o in self.optimizers.values():
+        for o in list(self.optimizers.values()):
             o.pick_proposal(checkpointing, reset_optimizer)
 
         self.clean_up_ipyparallel()
@@ -267,7 +267,7 @@ class MultiESOptimizer:
         '''
         logger.info("health_check")
         repro_candidates, delete_candidates = [], []
-        for optim_id in self.env_registry.keys():
+        for optim_id in list(self.env_registry.keys()):
             o = self.optimizers[optim_id]
             logger.info("niche {} created at {} start_score {} current_self_evals {}".format(
                 optim_id, o.created_at, o.start_score, o.self_evals))
@@ -283,7 +283,7 @@ class MultiESOptimizer:
 
 
     def pass_dedup(self, env_config):
-        if env_config.name in self.env_registry.keys():
+        if env_config.name in list(self.env_registry.keys()):
             logger.debug("active env already. reject!")
             return False
         else:
@@ -298,8 +298,8 @@ class MultiESOptimizer:
     def get_new_env(self, list_repro):
 
         optim_id = self.env_reproducer.pick(list_repro)
-        assert optim_id in self.optimizers.keys()
-        assert optim_id in self.env_registry.keys()
+        assert optim_id in list(self.optimizers.keys())
+        assert optim_id in list(self.env_registry.keys())
         parent = self.env_registry[optim_id]
         child_env_config = self.env_reproducer.mutate(parent)
 
@@ -370,7 +370,7 @@ class MultiESOptimizer:
 
     def remove_oldest(self, num_removals):
         list_delete = []
-        for optim_id in self.env_registry.keys():
+        for optim_id in list(self.env_registry.keys()):
             if len(list_delete) < num_removals:
                 list_delete.append(optim_id)
             else:
@@ -392,7 +392,7 @@ class MultiESOptimizer:
                                     max_num_envs=self.args.max_num_envs)
             logger.info('adjusted niches')
 
-            for o in self.optimizers.values():
+            for o in list(self.optimizers.values()):
                 o.clean_dicts_before_iter()
 
             self.ind_es_step(iteration=iteration)
@@ -404,5 +404,5 @@ class MultiESOptimizer:
                 logger.inge('transfering')
 
             if iteration % steps_before_transfer == 0:
-                for o in self.optimizers.values():
+                for o in list(self.optimizers.values()):
                     o.save_to_logger(iteration)

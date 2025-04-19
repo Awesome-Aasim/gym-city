@@ -59,7 +59,7 @@ class Policy(nn.Module):
                             'rule':args.rule
                             }}
                 self.base = base_model(**base_kwargs, n_chan=args.n_chan)
-            print('BASE NETWORK: n', self.base)
+            print(('BASE NETWORK: n', self.base))
             # if torch.cuda.is_available:
             #    print('device', torch.cuda.current_device())
             # else:
@@ -68,7 +68,7 @@ class Policy(nn.Module):
         elif len(obs_shape) == 1:
             self.base = MLPBase(**base_kwargs)
         else:
-            print('unsupported environment observation shape: {}'.format(obs_shape))
+            print(('unsupported environment observation shape: {}'.format(obs_shape)))
             raise NotImplementedError
 
         if action_space.__class__.__name__ == "Discrete":
@@ -544,13 +544,13 @@ class FractalBlock(NNBase):
         self.rule = rule # which fractal expansion rule to use
         # each rec is a call to a subfractal constructor, 1 rec = single-layered body
         self.n_recs = n_recs
-        print("Fractal Block: expansion type: {}, {} recursions".format(
-            self.rule, self.n_recs))
+        print(("Fractal Block: expansion type: {}, {} recursions".format(
+            self.rule, self.n_recs)))
 
         self.SKIPSQUEEZE = rule == 'wide1' # actually we mean a fractal rule that grows linearly in max depth but exponentially in number of columns, rather than vice versa, with number of recursions #TODO: combine the two rules
         if self.rule == 'wide1':
             self.n_cols = 2 ** (self.n_recs - 1)
-            print('{} cols'.format(self.n_cols))
+            print(('{} cols'.format(self.n_cols)))
         else:
             self.n_cols = self.n_recs
         self.COLUMNS = False # if true, we do not construct the network recursively, but as a row of concurrent columns
@@ -1599,7 +1599,7 @@ class MLPBase(NNBase):
         num_inputs = in_w * in_h * num_inputs
         if recurrent:
             num_inputs = hidden_size
-        print('num_inputs: {}, hidden_size: {}'.format(num_inputs, hidden_size))
+        print(('num_inputs: {}, hidden_size: {}'.format(num_inputs, hidden_size)))
 
         init_ = lambda m: init(m,
             init_normc_,

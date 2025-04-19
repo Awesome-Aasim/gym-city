@@ -59,17 +59,17 @@ def make_net(genome, config, bs):
 
 def activate_net(net, states, debug=False, step_num=0):
     if debug and step_num == 1:
-        print("\n" + "=" * 20 + " DEBUG " + "=" * 20)
-        print(net.delta_w_node)
-        print("W_i init: ", net.input_to_hidden[0])
-        print("W_o init: ", net.hidden_to_output[0])
+        print(("\n" + "=" * 20 + " DEBUG " + "=" * 20))
+        print((net.delta_w_node))
+        print(("W_i init: ", net.input_to_hidden[0]))
+        print(("W_o init: ", net.hidden_to_output[0]))
     outputs = net.activate(states).cpu().numpy()
     if debug and (step_num - 1) % 100 == 0:
-        print("\nStep {}".format(step_num - 1))
-        print("Outputs: ", outputs[0])
-        print("Delta W: ", net.delta_w_node)
-        print("W_i: ", net.input_to_hidden[0])
-        print("W_o: ", net.hidden_to_output[0])
+        print(("\nStep {}".format(step_num - 1)))
+        print(("Outputs: ", outputs[0]))
+        print(("Delta W: ", net.delta_w_node))
+        print(("W_i: ", net.input_to_hidden[0]))
+        print(("W_o: ", net.hidden_to_output[0]))
     return np.argmax(outputs, axis=1)
 
 
@@ -129,7 +129,7 @@ def run(n_generations, n_processes):
 
     print(winner)
     final_performance = evaluator.eval_genome(winner, config)
-    print("Final performance: {}".format(final_performance))
+    print(("Final performance: {}".format(final_performance)))
     generations = reporter.generation + 1
     return generations
 

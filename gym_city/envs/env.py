@@ -13,8 +13,8 @@ if sys.version_info[0] >= 3:
     from .corecontrol import MicropolisControl
 else:
     import gtk
-    from tilemap import TileMap
-    from corecontrol import MicropolisControl
+    from .tilemap import TileMap
+    from .corecontrol import MicropolisControl
 import time
 
 class MicropolisEnv(core.Env):
@@ -37,7 +37,7 @@ class MicropolisEnv(core.Env):
                 'num_plants': 14,
                 'mayor_rating': 100
                 })
-        self.trg_param_vals = np.array([v for v in self.city_trgs.values()])
+        self.trg_param_vals = np.array([v for v in list(self.city_trgs.values())])
         self.param_bounds = OrderedDict({
                 'res_pop': (0, 750),
                 'com_pop': (0, 100),
@@ -60,7 +60,7 @@ class MicropolisEnv(core.Env):
         self.max_loss = 0
         i = 0
         self.param_ranges = []
-        for param, (lb, ub) in self.param_bounds.items():
+        for param, (lb, ub) in list(self.param_bounds.items()):
             weight = self.weights[param]
             rng = abs(ub - lb)
             self.param_ranges += [rng]
@@ -151,7 +151,7 @@ class MicropolisEnv(core.Env):
         self.num_density_maps = 3
         num_user_features = 1 # static builds
         # traffic, power, density
-        print('num map features: {}'.format(self.micro.map.num_features))
+        print(('num map features: {}'.format(self.micro.map.num_features)))
         self.num_obs_channels = self.micro.map.num_features + self.num_scalars \
                 + self.num_density_maps + num_user_features
         if self.poet:
@@ -217,7 +217,7 @@ class MicropolisEnv(core.Env):
                         self.intsToActions[i] = [z, x, y]
                         self.actionsToInts[z, x, y] = i
                         i += 1
-        print('len of intsToActions: {}\n num tools: {}'.format(len(self.intsToActions), self.num_tools))
+        print(('len of intsToActions: {}\n num tools: {}'.format(len(self.intsToActions), self.num_tools)))
 
     def randomStep(self):
         self.step(self.action_space.sample())
@@ -305,7 +305,7 @@ class MicropolisEnv(core.Env):
         if self.poet:
             for j in range(3):
                 scalars[j] = scalars[j] / self.param_ranges[j]
-            trg_metrics = [v for k, v in self.city_trgs.items()]
+            trg_metrics = [v for k, v in list(self.city_trgs.items())]
             for i in range(len(trg_metrics)):
                 trg_metrics[i] = trg_metrics[i] / self.param_ranges[i]
             scalars += trg_metrics
@@ -347,7 +347,7 @@ class MicropolisEnv(core.Env):
         '''
         if True:
             reward = 0
-            for metric, trg in self.city_trgs.items():
+            for metric, trg in list(self.city_trgs.items()):
                 last_val = self.last_city_metrics[metric]
                 trg_change = trg - last_val
                 val = self.city_metrics[metric]
@@ -417,9 +417,9 @@ class MicropolisEnv(core.Env):
 
 
     def set_params(self, trgs):
-        for k, v in trgs.items():
+        for k, v in list(trgs.items()):
             self.city_trgs[k] = v
-        self.trg_param_vals = np.array([v for v in self.city_trgs.values()])
+        self.trg_param_vals = np.array([v for v in list(self.city_trgs.values())])
         self.display_city_trgs()
        #print('set city trgs of env {} to: {}'.format(self.rank, self.city_trgs))
 
@@ -551,8 +551,8 @@ class MicropolisEnv(core.Env):
             zone_map = self.micro.map.zoneMap[-1]
             zone_map = zone_map.transpose(1,0)
             zone_map = np.array_repr(zone_map).replace(',  ','  ').replace('],\n', ']\n').replace(',\n', ',').replace(', ', ' ').replace('        ',' ').replace('         ','  ')
-            print('{} \n population: {}, traffic: {}, episode: {}, step: {}, reward: {} \n'.format(zone_map, self.curr_pop, self.micro.total_traffic, self.num_episode, self.num_step, self.curr_reward#, static_map
-                ))
+            print(('{} \n population: {}, traffic: {}, episode: {}, step: {}, reward: {} \n'.format(zone_map, self.curr_pop, self.micro.total_traffic, self.num_episode, self.num_step, self.curr_reward#, static_map
+                )))
            #print(self.micro.map.centers)
 
 

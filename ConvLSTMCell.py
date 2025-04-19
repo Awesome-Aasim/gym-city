@@ -79,7 +79,7 @@ def _main():
 
     print('Instantiate model')
     model = ConvLSTMCell(c, d)
-    print(repr(model))
+    print((repr(model)))
 
     print('Create input and target Variables')
     x = Variable(torch.rand(T, b, c, h, w))
@@ -88,7 +88,7 @@ def _main():
     print('Create a MSE criterion')
     loss_fn = nn.MSELoss()
 
-    print('Run for', max_epoch, 'iterations')
+    print(('Run for', max_epoch, 'iterations'))
     for epoch in range(0, max_epoch):
         state = None
         loss = 0
@@ -96,7 +96,7 @@ def _main():
             state = model(x[t], state)
             loss += loss_fn(state[0], y[t])
 
-        print(' > Epoch {:2d} loss: {:.3f}'.format((epoch+1), loss.data[0]))
+        print((' > Epoch {:2d} loss: {:.3f}'.format((epoch+1), loss.data[0])))
 
         # zero grad parameters
         model.zero_grad()
@@ -108,9 +108,9 @@ def _main():
         for p in model.parameters():
             p.data.sub_(p.grad.data * lr)
 
-    print('Input size:', list(x.data.size()))
-    print('Target size:', list(y.data.size()))
-    print('Last hidden state size:', list(state[0].size()))
+    print(('Input size:', list(x.data.size())))
+    print(('Target size:', list(y.data.size())))
+    print(('Last hidden state size:', list(state[0].size())))
 
 
 if __name__ == '__main__':

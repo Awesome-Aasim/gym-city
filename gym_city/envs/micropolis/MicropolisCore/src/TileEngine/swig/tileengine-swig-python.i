@@ -86,7 +86,7 @@
 // Globals
 
 
-extern Pycairo_CAPI_t *Pycairo_CAPI;
+// extern Pycairo_CAPI_t *Pycairo_CAPI;
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -104,7 +104,7 @@ extern Pycairo_CAPI_t *Pycairo_CAPI;
 
     // Import the pycairo module's functions and types into this module. 
     // This enables us to convert between cairo_t and Python cairo.Context objects.
-    Pycairo_CAPI;
+    // Pycairo_IMPORT;
 
 %}
 

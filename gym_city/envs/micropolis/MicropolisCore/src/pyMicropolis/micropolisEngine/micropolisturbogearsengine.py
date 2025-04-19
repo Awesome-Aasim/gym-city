@@ -86,7 +86,7 @@ import re
 import cairo
 from io import StringIO
 from pyMicropolis.tileEngine import tileengine
-from . import micropolisengine
+import micropolisengine
 import turbogears
 from turbogears import identity
 import turbogears.database

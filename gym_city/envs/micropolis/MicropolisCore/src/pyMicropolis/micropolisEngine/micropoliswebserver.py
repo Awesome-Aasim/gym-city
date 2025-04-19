@@ -253,7 +253,7 @@ class MicropolisHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             *args,
             **params):
 
-        print(("__INIT__ MicropolisHTTPRequestHandler", "SELF", self, "ARGS", args, "PARAMS", params))
+        print("__INIT__ MicropolisHTTPRequestHandler", "SELF", self, "ARGS", args, "PARAMS", params)
 
         http.server.BaseHTTPRequestHandler.__init__(
             self,
@@ -264,7 +264,7 @@ class MicropolisHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         """Serve a GET request."""
         path = self.path
-        print(("do_GET", self, "path", path))
+        print("do_GET", self, "path", path)
 
         server = self.server
         m = server.m
@@ -311,7 +311,7 @@ class MicropolisHTTPServer(http.server.HTTPServer):
             *args,
             **params):
 
-        print(("__INIT__ MicropolisHTTPServer", "SELF", self, "ARGS", args, "PARAMS", params))
+        print("__INIT__ MicropolisHTTPServer", "SELF", self, "ARGS", args, "PARAMS", params)
 
         http.server.HTTPServer.__init__(
             self,
@@ -320,7 +320,7 @@ class MicropolisHTTPServer(http.server.HTTPServer):
 
         m = micropolisengine.Micropolis()
         self.m = m
-        print(("Created Micropolis simulator engine:", m))
+        print("Created Micropolis simulator engine:", m)
 
         m.resourceDir = 'res'
         m.initGame()
@@ -330,7 +330,7 @@ class MicropolisHTTPServer(http.server.HTTPServer):
             path = os.path.basename(__file__)
             path = os.path.abspath(os.path.join(path, "../cities"))
             cityFileName = path + os.sep + 'haight.cty'
-            print(("Loading city file:", cityFileName))
+            print("Loading city file:", cityFileName)
             m.loadFile(cityFileName)
 
             # Initialize the simulator engine.
@@ -350,7 +350,7 @@ class MicropolisHTTPServer(http.server.HTTPServer):
 
 def test(HandlerClass = MicropolisHTTPRequestHandler,
          ServerClass = MicropolisHTTPServer):
-    print(("Starting web server:", HandlerClass, ServerClass))
+    print("Starting web server:", HandlerClass, ServerClass)
     http.server.test(HandlerClass, ServerClass)
 
 

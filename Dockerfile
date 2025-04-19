@@ -1,4 +1,6 @@
-FROM nvidia/cudagl:10.0-base-ubuntu18.04
+FROM nvidia/cudagl:11.4.2-base-ubuntu20.04
+ENV TZ="UTC"
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 USER root
 RUN apt update && \
     apt upgrade -y && \
@@ -29,19 +31,19 @@ RUN pip3 install --upgrade --force-reinstall \
     pygobject
 
 # Copy the current directory contents into the container at /usr/src/app
-WORKDIR /usr/src/app
+WORKDIR /workspaces/gym-city/
 COPY . ./
 RUN make clean
 RUN mkdir -p gym_city/envs/micropolis/MicropolisCore/src/TileEngine/objs
 RUN mkdir -p gym_city/envs/micropolis/MicropolisCore/src/CellEngine/objs
 RUN mkdir -p gym_city/envs/micropolis/MicropolisCore/src/MicropolisEngine/objs
-RUN make
-RUN make install
+# RUN make
+# RUN make install
 
 # This throws an error---I think because there is no way to render, neither from here nor an interactive shell.
 # Instead, launch an interactive shell, then connect to the running container via the VSCode Dev Container extension,
 # *then* run this command. This way, the GUI is able to render.
-CMD python3 tilemap_test.py
+# CMD python3 tilemap_test.py
 
 
 # RUN pip3 install \

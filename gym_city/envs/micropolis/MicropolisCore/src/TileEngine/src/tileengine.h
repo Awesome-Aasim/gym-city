@@ -68,7 +68,8 @@
 ////////////////////////////////////////////////////////////////////////
 // Includes
 
-
+#ifndef TILEENGINE_H
+#define TILEENGINE_H 1
 #include <Python.h>
 
 #include <stdio.h>
@@ -225,19 +226,19 @@ public:
 
 
     void renderTilesLazy(
-        PyObject *ctx,
-        PyObject *tileFunction,
-        PyObject *tileMap,
-        int tileSize,
-        int renderCol,
-        int renderRow,
-        int renderCols,
-        int renderRows,
-        double alpha,
-        PyObject *tileGenerator,
-        PyObject *tileCache,
-        PyObject *tileCacheSurfaces,
-        PyObject *tileState);
+	cairo_t *ctx,
+	PyObject *tileFunction,
+	PyObject *tileMap,
+	int tileSize,
+	int renderCol,
+	int renderRow,
+	int renderCols,
+	int renderRows,
+	double alpha,
+	PyObject *tileGenerator,
+	PyObject *tileCache,
+	PyObject *tileCacheSurfaces,
+	PyObject *tileState);
 
 
     void renderPixels(
@@ -269,3 +270,4 @@ public:
 
 
 ////////////////////////////////////////////////////////////////////////
+#endif

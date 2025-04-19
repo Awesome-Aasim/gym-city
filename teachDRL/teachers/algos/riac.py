@@ -112,7 +112,7 @@ class RIAC():
             # repeat until the two sub regions contain at least minlen of the mother region
             while len(sub_reg1[0]) < self.minlen or len(sub_reg2[0]) < self.minlen:
                 # decide on dimension
-                dim = np.random.choice(range(self.nb_dims))
+                dim = np.random.choice(list(range(self.nb_dims)))
                 threshold = reg.bounds.sample()[dim]
                 bounds1 = Box(reg.bounds.low, reg.bounds.high, dtype=np.float32)
                 bounds1.high[dim] = threshold

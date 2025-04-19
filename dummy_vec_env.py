@@ -12,7 +12,7 @@ class DDummyVecEnv(DummyVecEnv):
     def init_storage(self):
         obs_spaces = self.observation_space.spaces if isinstance(self.observation_space, gym.spaces.Tuple) else (self.observation_space,)
         self.buf_obs = [np.zeros((self.num_envs,) + tuple(s.shape), s.dtype) for s in obs_spaces]
-        print(np.array(self.buf_obs).shape)
+        print((np.array(self.buf_obs).shape))
         self.buf_dones = np.zeros((self.num_envs,), dtype=np.bool)
         self.buf_rews  = np.zeros((self.num_envs,), dtype=np.float32)
         self.buf_infos = [{} for _ in range(self.num_envs)]

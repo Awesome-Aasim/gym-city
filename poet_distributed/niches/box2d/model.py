@@ -150,13 +150,13 @@ class Model:
                 self.bias_std[i] = np.exp(
                     self.sigma_factor * self.bias_log_std[i] + self.sigma_bias)
                 if self.render_mode:
-                    print("bias_std, layer", i, self.bias_std[i])
+                    print(("bias_std, layer", i, self.bias_std[i]))
                 pointer += s
 
     def load_model(self, filename):
         with open(filename) as f:
             data = json.load(f)
-        print('loading file %s' % (filename))
+        print(('loading file %s' % (filename)))
         self.data = data
         model_params = np.array(data[0])  # assuming other stuff is in data
         self.set_model_params(model_params)
@@ -218,7 +218,7 @@ def simulate(model, seed, train_mode=False, render_mode=False, num_episode=5,
                 break
 
         if render_mode:
-            print("reward", total_reward, "timesteps", t)
+            print(("reward", total_reward, "timesteps", t))
         reward_list.append(total_reward)
         t_list.append(t)
 

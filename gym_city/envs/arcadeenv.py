@@ -8,8 +8,8 @@ if sys.version_info[0] >= 3:
     from .walkcontrol import MicroWalkControl
 else:
     import gtk
-    from tilemap import TileMap 
-    from walkcontrol import MicroWalkControl
+    from .tilemap import TileMap 
+    from .walkcontrol import MicroWalkControl
 
 from time import sleep
 

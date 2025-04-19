@@ -4,18 +4,15 @@
 @todo Implement run()
 """
 
-import pyMicropolis.micropolisEngine
-import gi
-gi.require_version('Gtk', '3.0')
-gi.require_version('PangoCairo', '1.0')
-from pyMicropolis.micropolisEngine import micropolisengine, micropolisgtkengine, micropoliswindow, micropolisrobot
 
-from gi.repository import Gtk as gtk
+import pyMicropolis.micropolisEngine
+from pyMicropolis.micropolisEngine import micropolisengine, micropolisgtkengine, micropoliswindow, micropolisrobot
+import gtk
 import random
 import math
 
 
-def run(builderBot=None):
+def run():
 
     engine = micropolisgtkengine.CreateGTKEngine()
 
@@ -23,7 +20,7 @@ def run(builderBot=None):
     engine.setPasses(200)
     setTile = engine.setTile
 
-    if False:
+    if True:
         for i in range(0, 4):
             engine.addRobot(
                 micropolisrobot.MicropolisRobot_PacBot(
@@ -56,32 +53,10 @@ def run(builderBot=None):
 
     if True:
         win1 = micropoliswindow.MicropolisPanedWindow(engine=engine)
-        win1.set_default_size(w, h)
+        #win1.set_default_size(w, h)
         win1.set_size_request(w, h)
         win1.move(x, y)
         win1.show_all()
 
     gtk.main()
 
-
-# for bots. Return the engine for training simulation
-def train(env=None, rank=None, root_gtk=None, map_x=20, map_y=20, gui=False):
-
-    kwargs = {'env': env, 'rank': rank, 'root_gtk': root_gtk}
-    engine = micropolisgtkengine.CreateGTKEngine(**kwargs)
-
-    engine.cityTax = 10
-
-    x = 0
-    y = 0
-
-    w = 800
-    h = 600
-
-    win1 = micropoliswindow.MicropolisPanedWindow(engine=engine)
-    win1.set_default_size(w, h)
-    win1.set_size_request(w, h)
-    win1.move(x, y)
-    win1.show_all()
-
-    return engine, win1

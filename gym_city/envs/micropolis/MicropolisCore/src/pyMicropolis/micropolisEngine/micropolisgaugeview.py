@@ -69,11 +69,10 @@
 # Import stuff
 
 
-from gi.repository import Gtk as gtk
+import gtk
 import cairo
-from gi.repository import Pango as pango
-from gi.repository import PangoCairo
-from . import micropolisengine
+import pango
+import micropolisengine
 from . import micropolisview
 
 
@@ -267,7 +266,7 @@ class MicropolisGaugeView(micropolisview.MicropolisView):
             textX, textY = self.pinMarkupXY(
                 text, x, y, 0.5, 0.5, playout)
             ctx.move_to(textX, textY)
-            PangoCairo.show_layout(ctx, playout)
+            ctx.show_layout(playout)
 
         ctx.set_source_rgb(0.0, 0.0, 0.0)
 
@@ -300,7 +299,7 @@ class MicropolisGaugeView(micropolisview.MicropolisView):
         ctx.set_source_rgb(0.0, 0.0, 0.0)
         playout.set_markup(markup)
         ctx.move_to(0, 0)
-        PangoCairo.show_layout(ctx, playout)
+        ctx.show_layout(playout)
 
         # Finish drawing window.
 

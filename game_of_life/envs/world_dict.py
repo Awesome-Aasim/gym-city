@@ -29,7 +29,7 @@ class World:
     def _tick(self):
         state_changed = False
         # First determine the action for all cells
-        for key,cell in self.cells.items():
+        for key,cell in list(self.cells.items()):
             alive_neighbours = self.alive_neighbours_around(cell)
             if cell.alive is False and alive_neighbours == 3:
                 cell.next_state = 1
@@ -43,7 +43,7 @@ class World:
         self.state_changed = state_changed
 
         # Then execute the determined action for all cells
-        for key,cell in self.cells.items():
+        for key,cell in list(self.cells.items()):
             if cell.next_state == 1:
                 cell.alive = True
             elif cell.next_state == 0:
@@ -89,7 +89,7 @@ class World:
                 self.build_cell(x, y, alive)
 
     def prepopulate_neighbours(self):
-        for key,cell in self.cells.items():
+        for key,cell in list(self.cells.items()):
             self.neighbours_around(cell)
 
     def add_cell(self, x, y, alive = False):

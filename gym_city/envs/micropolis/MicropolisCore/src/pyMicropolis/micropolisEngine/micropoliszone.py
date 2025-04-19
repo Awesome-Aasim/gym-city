@@ -71,7 +71,7 @@
 
 import random
 import math
-from . import micropolisengine
+import micropolisengine
 from . import micropolisrobot
 from . import micropolistool
 from pyMicropolis.tileEngine import tiletool
@@ -246,7 +246,7 @@ class MicropolisZone:
 
 
     def createRobot(self, x, y):
-        print(("CREATE ROBOT", x, y, self, self.robotClass))
+        print("CREATE ROBOT", x, y, self, self.robotClass)
         robot = self.robotClass(
             x=(x * 16) + 8,
             y=(y * 16) + 8,

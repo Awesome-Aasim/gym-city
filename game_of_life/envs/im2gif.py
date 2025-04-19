@@ -15,7 +15,7 @@ class GifWriter(object):
                 shutil.rmtree(input_path)
                 self.done = True
                 return
-            print('creating gif using images in: {}'.format(input_path))
+            print(('creating gif using images in: {}'.format(input_path)))
             output_path = os.path.join(output_path, 'test_{}.gif'.format(self.n_gifs))
             # grab all image paths in the input directory
             image_paths = sorted(list(paths.list_images(input_path)))
@@ -27,7 +27,7 @@ class GifWriter(object):
             # construct the image magick 'convert' command that will be used
             # generate our output GIF, giving a larger delay to the final
             # frame (if so desired)
-            print('saving gif at {}'.format(output_path))
+            print(('saving gif at {}'.format(output_path)))
             cmd = "convert -delay {} {} -delay {} {} -loop {} {}".format(
                     delay, " ".join(image_paths), finalDelay, last_path, loop,
                     output_path)

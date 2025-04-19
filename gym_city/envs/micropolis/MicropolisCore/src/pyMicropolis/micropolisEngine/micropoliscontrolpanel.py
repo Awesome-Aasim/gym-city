@@ -69,10 +69,10 @@
 # Import stuff
 
 
-from gi.repository import Gtk as gtk
+import gtk
 import cairo
-from gi.repository import Pango as pango
-from . import micropolisengine
+import pango
+import micropolisengine
 from . import micropolisview
 
 
@@ -255,7 +255,7 @@ class MicropolisControlPanel(gtk.Frame):
                     (passes == simPasses)):
                     if scaleSpeed.get_value() != i:
                         scaleSpeed.set_value(i)
-                   #print(("found speed", speed, "passes", passes, "i", i, "label", label))
+                    print("found speed", speed, "passes", passes, "i", i, "label", label)
                     self.setSpeedLabel(label)
                     return
                 i += 1
@@ -264,7 +264,7 @@ class MicropolisControlPanel(gtk.Frame):
                 if (speed == simSpeed):
                     if scaleSpeed.get_value() != i:
                         scaleSpeed.set_value(i)
-                   #print(("found speed", speed, "any passes", passes, "current", engine.simPasses, "i", i, "label", label))
+                    print("found speed", speed, "any passes", passes, "current", engine.simPasses, "i", i, "label", label)
                     if passes != engine.simPasses:
                         engine.setPasses(passes)
                     self.setSpeedLabel(label)
@@ -274,7 +274,7 @@ class MicropolisControlPanel(gtk.Frame):
             if scaleSpeed.get_value() != i:
                 scaleSpeed.set_value()
             self.setSpeedLabel(self.speeds[i][2])
-            print(("default", i, self.speeds[i][2]))
+            print("default", i, self.speeds[i][2])
         elif name == 'options':
             self.checkButtonDisasters.set_property('active', engine.enableDisasters)
             self.checkButtonAutoBudget.set_property('active', engine.autoBudget)

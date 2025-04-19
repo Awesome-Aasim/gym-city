@@ -33,8 +33,7 @@ http://www.PieMenu.com
 ########################################################################
 
 
-from gi.repository import Gtk as gtk
-from gi.repository import Gdk as gdk
+import gtk
 import cairo
 import pango
 import math
@@ -121,10 +120,10 @@ def GetImage(s):
     elif s[-4:].lower() == '.svg':
         try:
             # FIXME: read SVG into image
-            print(("SVG images not supported yet:", s))
+            print("SVG images not supported yet:", s)
         except: pass
     else:
-        print(("Don't know how to load image file type:", s))
+        print("Don't know how to load image file type:", s)
    
     if image:
         ImageCache[s] = image
@@ -353,7 +352,7 @@ class PieItem:
                     iconX = labelWidth + iconPadding
                     iconY = Floor(((height - iconHeight) / 2) + iconPadding)
                 else:
-                    print(("Invalid iconSide: " + repr(iconSide)))
+                    print("Invalid iconSide: " + repr(iconSide))
 
         self.width = width
         self.height = height
@@ -562,7 +561,7 @@ class PieItem:
                 x + self.labelX,
                 y + self.labelY)
 
-            PangoCairo.show_layout(context, playout)
+            context.show_layout(playout)
 
         hilited = self.index == self.pie.curItem
         if hilited:
@@ -831,7 +830,7 @@ class PieMenu:
 
     def validate(self, context, pcontext, playout):
 
-        print(("VALIDATE", self.valid))
+        print("VALIDATE", self.valid)
 
         if self.valid:
             return
@@ -874,7 +873,7 @@ class PieMenu:
 
     def layout(self, context, pcontext, playout):
 
-        print(("PieMenu layout", self, context, pcontext, playout))
+        print("PieMenu layout", self, context, pcontext, playout)
 
         # Just the visible items.
         visibleItems = []
@@ -1335,7 +1334,7 @@ class PieMenu:
         # Done laying out the pie menu. (Whew!)
 
         # FIXME: Just do this after popup?
-        print(("AFTER LAYOUT", "WIDTH", self.width, "HEIGHT", self.height))
+        print("AFTER LAYOUT", "WIDTH", self.width, "HEIGHT", self.height)
         self.setWindowShape()
 
 
@@ -1499,7 +1498,7 @@ class PieMenu:
 
     def changeSize(self, width, height):
 
-        print(("CHANGESIZE", width, height))
+        print("CHANGESIZE", width, height)
 
         width = int(width)
         height = int(height)
@@ -1534,20 +1533,20 @@ class PieMenu:
         d.grab_add()
         d.grab_focus()
 
-        #print "W", self.get_window()
+        #print "W", self.window
 
         print("POINTER_GRAB")
-        gdk.pointer_grab(
-            d.get_window(),
+        gtk.gdk.pointer_grab(
+            d.window,
             True,
-            gdk.BUTTON_PRESS_MASK |
-            gdk.BUTTON_RELEASE_MASK |
-            gdk.ENTER_NOTIFY_MASK |
-            gdk.LEAVE_NOTIFY_MASK |
-            gdk.POINTER_MOTION_MASK)
+            gtk.gdk.BUTTON_PRESS_MASK |
+            gtk.gdk.BUTTON_RELEASE_MASK |
+            gtk.gdk.ENTER_NOTIFY_MASK |
+            gtk.gdk.LEAVE_NOTIFY_MASK |
+            gtk.gdk.POINTER_MOTION_MASK)
 
-        gdk.keyboard_grab(
-            d.get_window()
+        gtk.gdk.keyboard_grab(
+            d.window,
             owner_events=True)
 
         self.handlePopUp()
@@ -1560,7 +1559,7 @@ class PieMenu:
         self.d.grab_remove()
 
         print("POINTER_UNGRAB")
-        gdk.pointer_ungrab(gdk.CURRENT_TIME)
+        gtk.gdk.pointer_ungrab()
 
         self.hide()
        
@@ -1587,7 +1586,7 @@ class PieMenu:
 
     def draw(self, widget, event):
 
-        context = widget.get_window().cairo_create()
+        context = widget.window.cairo_create()
         pcontext = widget.create_pango_context()
         playout = pango.Layout(pcontext)
 
@@ -1595,16 +1594,11 @@ class PieMenu:
 
         self.validate(context, pcontext, playout)
 
-# OLD GTK2 CODE:
-#       context.rectangle(
-#           event.area.x,
-#           event.area.y,
-#           event.area.width,
-#           event.area.height)
-
-        context.rectangle( 0, 0,
-                self.get_allocated_width(), self.get_allocated_height())
-
+        context.rectangle(
+            event.area.x,
+            event.area.y,
+            event.area.width,
+            event.area.height)
         context.clip()
 
         self.drawBackground(context, pcontext, playout)
@@ -1949,7 +1943,7 @@ class PieMenu:
                 x + headerPadding,
                 y + headerPadding)
 
-            PangoCairo.show_layout(context, playout)
+            context.show_layout(playout)
 
 
     def drawFooter(self, context, pcontext, playout):
@@ -1999,7 +1993,7 @@ class PieMenu:
                 x + footerPadding,
                 y + footerPadding)
 
-            PangoCairo.show_layout(context, playout)
+            context.show_layout(playout)
 
 
     def drawOverlay(self, context, pcontext, playout):

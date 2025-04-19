@@ -1,0 +1,6 @@
+services:
+  gym-city:
+    build:
+      context: "."
+      dockerfile: Dockerfile_2
+    image: gym-city-image

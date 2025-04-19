@@ -235,14 +235,14 @@ class CellModel(cellengine.CellEngine):
         views = self.views
         if view not in views:
             self.views.append(view)
-            print(("ADDVIEW", view))
+            print("ADDVIEW", view)
 
 
     def removeView(self, view):
         views = self.views
         if view in views:
             views.remove(view)
-            print(("REMOVEVIEW", view))
+            print("REMOVEVIEW", view)
 
 
     def startTimer(

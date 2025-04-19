@@ -112,7 +112,7 @@ def run_main(args):
             )
     engines = client[:]
     r_engine = client[0]
-    print(dir(engines))
+    print((dir(engines)))
     engines.block = True
     scheduler = client.load_balanced_view()
     engines.apply(initialize_worker)

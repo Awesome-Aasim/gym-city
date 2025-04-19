@@ -64,15 +64,14 @@
 # Micropolis Tool
 # Don Hopkins
 
+
 ########################################################################
 # Import Modules
 
 
-from . import micropolisengine
+import micropolisengine
 from pyMicropolis.tileEngine import tiletool
 
-# to allow calling python from c++
-# import cb
 
 ########################################################################
 
@@ -99,48 +98,21 @@ class MicropolisTool(tiletool.TileTool):
         x, y = view.getEventXY(event)
         x = int(x)
         y = int(y)
-        print("DOWN", x, y, "index", self.toolIndex, view.engine.toolDown)
-        bot = view.engine.generic_engine.builderBot
-        if bot is not None:
-            # coordinates on bot's internal map
-            x_bot = x - bot.MAP_XS
-            y_bot = y - bot.MAP_YS
-            if x_bot < bot.MAP_X and y_bot < bot.MAP_Y:
-                print("Bot is adding build at ({}, {}), tool index {}".format(x_bot, y_bot, self.toolIndex))
-                view.engine.builderBot.playerToolDown(self.toolIndex, x_bot, y_bot)
-            else:
-                print('Build site out of range')
-                if view.engine.toolDown(self.toolIndex, x, y) == 1:
-                    print("Successful player build outside bot's playing area")
-        else:
-            if view.engine.toolDown(self.toolIndex, x, y) == 1:
-                print("Successful player build (no bot)")
+        #print "DOWN", x, y, "index", self.toolIndex, view.engine.toolDown
+        view.engine.toolDown(self.toolIndex, x, y)
         self.lastX = x
         self.lastY = y
 
 
     def handleMouseDrag(self, view, event):
 
-
         x, y = view.getEventXY(event)
         x = int(x)
         y = int(y)
-        bot = view.engine.generic_engine.builderBot
-        if bot is None:
-            #print "DRAG", self.lastX, self.lastY, x, y, "index", self.toolIndex, view.engine.toolDrag
-            view.engine.toolDrag(self.toolIndex, self.lastX, self.lastY, x, y)
-        # TODO: bot should register this
+        #print "DRAG", self.lastX, self.lastY, x, y, "index", self.toolIndex, view.engine.toolDrag
+        view.engine.toolDrag(self.toolIndex, self.lastX, self.lastY, x, y)
         self.lastX = x
         self.lastY = y
-
-    def toolDown(tool_int, x, y):
-        ''' called from c++'''
-        x, y, = int(x), int(y)
-        print("TOOL ", tool_int)
-
-#   o = cb.ObjWithPyCallback()
-#   o.setCallback(toolDown)
-#   o.call()
 
 
     def handleMouseUp(self, view, event):

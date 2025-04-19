@@ -122,17 +122,17 @@ ZoneTable = {
 
 def main():
     if len(sys.argv) not in (2, 3, 4,):
-        print "Usage: makezone.py all -- make all zone s"
-        print "Usage: makezone.py zoneIDs [zoneImage] [tileDir] -- make zone(s)"
-        print "zoneIDs: comma separated list of zone IDs"
-        print "zoneImage: Name of PNG file with image of zone. Optional, defaults to zone_<zoneID>.png"
-        print "tileDir: Name of output tile directory. Optional, defaults to current directory."
+        print("Usage: makezone.py all -- make all zone s")
+        print("Usage: makezone.py zoneIDs [zoneImage] [tileDir] -- make zone(s)")
+        print("zoneIDs: comma separated list of zone IDs")
+        print("zoneImage: Name of PNG file with image of zone. Optional, defaults to zone_<zoneID>.png")
+        print("tileDir: Name of output tile directory. Optional, defaults to current directory.")
         sys.exit(1)
 
     args = sys.argv
     argCount = len(args)
 
-    print "ARGCOUNT", argCount, "ARGS[1]", args[1]
+    print("ARGCOUNT", argCount, "ARGS[1]", args[1])
     if (argCount == 2) and (args[1] == 'all'):
         zoneIDs = sorted(ZoneTable.keys())
     else:
@@ -144,13 +144,13 @@ def main():
         tileDir = os.getcwd()
 
     if not os.path.exists(tileDir):
-        print "Tile directory does not exist:", tileDir
+        print("Tile directory does not exist:", tileDir)
 
-    print "ZONEIDS", zoneIDs
+    print("ZONEIDS", zoneIDs)
     for zoneID in zoneIDs:
 
         if zoneID not in ZoneTable:
-            print "Undefined zoneID", zoneID, "should be one of:", ZoneTable.keys()
+            print("Undefined zoneID", zoneID, "should be one of:", list(ZoneTable.keys()))
             sys.exit(2)
 
         if argCount > 2:
@@ -161,7 +161,7 @@ def main():
                 ZoneFileNameTemplate % (zoneID,))
 
         if not os.path.exists(zoneImageFileName):
-            print "Zone image file does not exist:", zoneImageFileName
+            print("Zone image file does not exist:", zoneImageFileName)
             exit(3)
 
         MakeZone(zoneID, zoneImageFileName, tileDir)
@@ -170,7 +170,7 @@ def main():
 
 
 def MakeZone(zoneID, zoneImageFileName, tileDir):
-    print "MakeZone", zoneID, zoneImageFileName, tileDir
+    print("MakeZone", zoneID, zoneImageFileName, tileDir)
 
     zoneInfo = ZoneTable[zoneID]
     base = zoneInfo['base']
@@ -198,12 +198,12 @@ def MakeZone(zoneID, zoneImageFileName, tileDir):
             ctx.paint()
 
             tileImage.write_to_png(tileFileName)
-            print "Wrote tile", tileFileName
+            print("Wrote tile", tileFileName)
 
 
 def MakeAllTiles(tileDir):
 
-    print "Make All Tiles"
+    print("Make All Tiles")
 
     cols = 32
     rows = int(math.ceil(TileCount / float(cols)))
@@ -230,7 +230,7 @@ def MakeAllTiles(tileDir):
 
 
     allTilesImage.write_to_png(TilesFileName)
-    print "Wrote tiles", TilesFileName
+    print("Wrote tiles", TilesFileName)
 
 
 ########################################################################

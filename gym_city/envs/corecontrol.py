@@ -27,7 +27,7 @@ GIT_DIR = os.path.abspath(os.path.join(FILE_DIR, os.pardir, os.pardir))
 #
 #os.chdir(MICROPOLISCORE_DIR)
 sys.path.append(os.path.abspath(os.path.join(FILE_DIR, './micropolis/MicropolisCore/src')))
-print(sys.path)
+print((sys.path))
 from pyMicropolis.gtkFrontend import main
 
 

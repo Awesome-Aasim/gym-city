@@ -33,13 +33,9 @@ http://www.PieMenu.com
 ########################################################################
 
 
-from gi.repository import Gtk as gtk
-from gi.repository import Gdk as gdk
-import gi
-gi.require_version('PangoCairo', '1.0')
-from gi.repository import PangoCairo
+import gtk
 import cairo
-from gi.repository import Pango as pango
+import pango
 import math
 import time
 
@@ -124,10 +120,10 @@ def GetImage(s):
     elif s[-4:].lower() == '.svg':
         try:
             # FIXME: read SVG into image
-            print(("SVG images not supported yet:", s))
+            print("SVG images not supported yet:", s)
         except: pass
     else:
-        print(("Don't know how to load image file type:", s))
+        print("Don't know how to load image file type:", s)
    
     if image:
         ImageCache[s] = image
@@ -356,7 +352,7 @@ class PieItem:
                     iconX = labelWidth + iconPadding
                     iconY = Floor(((height - iconHeight) / 2) + iconPadding)
                 else:
-                    print(("Invalid iconSide: " + repr(iconSide)))
+                    print("Invalid iconSide: " + repr(iconSide))
 
         self.width = width
         self.height = height
@@ -568,7 +564,7 @@ class PieItem:
                 x + self.labelX,
                 y + self.labelY)
 
-            PangoCairo.show_layout(context, playout)
+            context.show_layout(playout)
 
         hilited = self.index == self.pie.curItem
         if hilited:
@@ -701,7 +697,7 @@ class PieMenu(gtk.Window):
         # Create the toplevel window
         gtk.Window.__init__(
             self,
-            type = gtk.STYLE_CLASS_POPUP,
+            type = gtk.WINDOW_POPUP,
             **args)
         try:
             self.set_screen(parent.get_screen())
@@ -829,29 +825,29 @@ class PieMenu(gtk.Window):
 
         self.connect("show", self.handleShow)
 
-        d.connect("draw", self.handleExpose)
-        d.connect("size-allocate", self.handleSizeAllocate)
-        d.connect("motion-notify-event", self.handleMotionNotifyEvent)
-        d.connect("button-press-event", self.handleButtonPressEvent)
-        d.connect("button-release-event", self.handleButtonReleaseEvent)
-        d.connect("proximity-in-event", self.handleProximityInEvent)
-        d.connect("proximity-out-event", self.handleProximityOutEvent)
-        d.connect("grab-notify", self.handleGrabNotify)
-        d.connect("grab-broken-event", self.handleGrabBrokenEvent)
-        d.connect("key-press-event", self.handleKeyPressEvent)
-        d.connect("key-release-event", self.handleKeyReleaseEvent)
+        d.connect("expose_event", self.handleExpose)
+        d.connect("size_allocate", self.handleSizeAllocate)
+        d.connect("motion_notify_event", self.handleMotionNotifyEvent)
+        d.connect("button_press_event", self.handleButtonPressEvent)
+        d.connect("button_release_event", self.handleButtonReleaseEvent)
+        d.connect("proximity_in_event", self.handleProximityInEvent)
+        d.connect("proximity_out_event", self.handleProximityOutEvent)
+        d.connect("grab_notify", self.handleGrabNotify)
+        d.connect("grab_broken_event", self.handleGrabBrokenEvent)
+        d.connect("key_press_event", self.handleKeyPressEvent)
+        d.connect("key_release_event", self.handleKeyReleaseEvent)
 
         d.set_events(
-            gdk.EventMask.EXPOSURE_MASK |
-            gdk.EventMask.POINTER_MOTION_MASK |
-            gdk.EventMask.POINTER_MOTION_HINT_MASK |
-            gdk.EventMask.BUTTON_MOTION_MASK |
-            gdk.EventMask.BUTTON_PRESS_MASK |
-            gdk.EventMask.BUTTON_RELEASE_MASK |
-            gdk.EventMask.KEY_PRESS_MASK |
-            gdk.EventMask.KEY_RELEASE_MASK |
-            gdk.EventMask.PROXIMITY_IN_MASK |
-            gdk.EventMask.PROXIMITY_OUT_MASK)
+            gtk.gdk.EXPOSURE_MASK |
+            gtk.gdk.POINTER_MOTION_MASK |
+            gtk.gdk.POINTER_MOTION_HINT_MASK |
+            gtk.gdk.BUTTON_MOTION_MASK |
+            gtk.gdk.BUTTON_PRESS_MASK |
+            gtk.gdk.BUTTON_RELEASE_MASK |
+            gtk.gdk.KEY_PRESS_MASK |
+            gtk.gdk.KEY_RELEASE_MASK |
+            gtk.gdk.PROXIMITY_IN_MASK |
+            gtk.gdk.PROXIMITY_OUT_MASK)
 
 
     def addItem(self, item):
@@ -868,7 +864,7 @@ class PieMenu(gtk.Window):
 
     def validate(self, context, pcontext, playout):
 
-        print(("VALIDATE", self.valid))
+        print("VALIDATE", self.valid)
 
         if self.valid:
             return
@@ -911,7 +907,7 @@ class PieMenu(gtk.Window):
 
     def layout(self, context, pcontext, playout):
 
-        print(("PieMenu layout", self, context, pcontext, playout))
+        print("PieMenu layout", self, context, pcontext, playout)
 
         # Just the visible items.
         visibleItems = []
@@ -1372,7 +1368,7 @@ class PieMenu(gtk.Window):
         # Done laying out the pie menu. (Whew!)
 
         # FIXME: Just do this after popup?
-        print(("AFTER LAYOUT", "WIDTH", self.width, "HEIGHT", self.height))
+        print("AFTER LAYOUT", "WIDTH", self.width, "HEIGHT", self.height)
         self.setWindowShape()
 
 
@@ -1539,7 +1535,7 @@ class PieMenu(gtk.Window):
 
     def changeSize(self, width, height):
 
-        print(("CHANGESIZE", width, height))
+        print("CHANGESIZE", width, height)
 
         width = int(width)
         height = int(height)
@@ -1577,20 +1573,18 @@ class PieMenu(gtk.Window):
         #print "W", self.window
 
         print("POINTER_GRAB")
-        gdk.pointer_grab(
-            d.get_window(),
+        gtk.gdk.pointer_grab(
+            d.window,
             True,
-            gdk.EventMask.BUTTON_PRESS_MASK |
-            gdk.EventMask.BUTTON_RELEASE_MASK |
-            gdk.EventMask.ENTER_NOTIFY_MASK |
-            gdk.EventMask.LEAVE_NOTIFY_MASK |
-            gdk.EventMask.POINTER_MOTION_MASK,
-            None, None, gdk.CURRENT_TIME)
+            gtk.gdk.BUTTON_PRESS_MASK |
+            gtk.gdk.BUTTON_RELEASE_MASK |
+            gtk.gdk.ENTER_NOTIFY_MASK |
+            gtk.gdk.LEAVE_NOTIFY_MASK |
+            gtk.gdk.POINTER_MOTION_MASK)
 
-        gdk.keyboard_grab(
-            d.get_window(),
-            owner_events=True,
-            time_=gdk.CURRENT_TIME)
+        gtk.gdk.keyboard_grab(
+            d.window,
+            owner_events=True)
 
         self.handlePopUp()
 
@@ -1602,7 +1596,7 @@ class PieMenu(gtk.Window):
         self.d.grab_remove()
 
         print("POINTER_UNGRAB")
-        gdk.pointer_ungrab(gdk.CURRENT_TIME)
+        gtk.gdk.pointer_ungrab()
 
         self.hide()
        
@@ -1629,7 +1623,7 @@ class PieMenu(gtk.Window):
 
     def draw(self, widget, event):
 
-        context = widget.get_window().cairo_create()
+        context = widget.window.cairo_create()
         pcontext = widget.create_pango_context()
         playout = pango.Layout(pcontext)
 
@@ -1638,10 +1632,10 @@ class PieMenu(gtk.Window):
         self.validate(context, pcontext, playout)
 
         context.rectangle(
-            0,
-            0,
-            self.get_allocated_width(),
-            self.get_allocated_height())
+            event.area.x,
+            event.area.y,
+            event.area.width,
+            event.area.height)
         context.clip()
 
         self.drawBackground(context, pcontext, playout)
@@ -1986,7 +1980,7 @@ class PieMenu(gtk.Window):
                 x + headerPadding,
                 y + headerPadding)
 
-            PangoCairo.show_layout(context, playout)
+            context.show_layout(playout)
 
 
     def drawFooter(self, context, pcontext, playout):
@@ -2036,7 +2030,7 @@ class PieMenu(gtk.Window):
                 x + footerPadding,
                 y + footerPadding)
 
-            PangoCairo.show_layout(context, playout)
+            context.show_layout(playout)
 
 
     def drawOverlay(self, context, pcontext, playout):
@@ -2342,7 +2336,7 @@ class PieMenu(gtk.Window):
 
     def handleShow(self, widget):
 
-        print(("handleShow", self, widget))
+        print("handleShow", self, widget)
         pass
 
 
@@ -2356,7 +2350,7 @@ class PieMenu(gtk.Window):
 
         if (hasattr(event, 'is_hint') and
             event.is_hint):
-            _, x, y, state = event.get_window().get_pointer()
+            x, y, state = event.window.get_pointer()
         else:
             x = event.x
             y = event.y
@@ -2366,13 +2360,13 @@ class PieMenu(gtk.Window):
 
 
     def handleButtonPressEvent(self, widget, event, *args):
-        print(("handleButtonPressEvent", self, widget, event, args))
+        print("handleButtonPressEvent", self, widget, event, args)
         self.handleMotionNotifyEvent(widget, event, *args)
         self.trackMouseDown()
 
 
     def handleButtonReleaseEvent(self, widget, event, *args):
-        print(("handleButtonReleaseEvent", self, widget, event, args))
+        print("handleButtonReleaseEvent", self, widget, event, args)
         self.handleMotionNotifyEvent(widget, event, *args)
         self.trackMouseUp()
 
@@ -2388,12 +2382,12 @@ class PieMenu(gtk.Window):
 
 
     def handleGrabNotify(self, widget, event, *args):
-        print(("handleGrabNotify", self, widget, event, args))
+        print("handleGrabNotify", self, widget, event, args)
         pass
 
 
     def handleGrabBrokenEvent(self, widget, event, *args):
-        print(("handleGrabBrokenEvent", self, widget, event, args))
+        print("handleGrabBrokenEvent", self, widget, event, args)
         self.popDown()
 
 
@@ -2438,9 +2432,9 @@ class PieMenuTarget(gtk.Button):
         #print "INIT"
        
         self.set_events(
-            gdk.EXPOSURE_MASK |
-            gdk.BUTTON_PRESS_MASK |
-            gdk.BUTTON_RELEASE_MASK)
+            gtk.gdk.EXPOSURE_MASK |
+            gtk.gdk.BUTTON_PRESS_MASK |
+            gtk.gdk.BUTTON_RELEASE_MASK)
 
 
         self.pie = None
@@ -2455,7 +2449,7 @@ class PieMenuTarget(gtk.Button):
         if not pie:
             return False
 
-        _, winX, winY, state = event.window.get_pointer()
+        winX, winY, state = event.window.get_pointer()
        
         #print "WIN", winX, winY
 

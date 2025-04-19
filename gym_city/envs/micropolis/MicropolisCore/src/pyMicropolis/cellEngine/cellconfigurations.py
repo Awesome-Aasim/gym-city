@@ -119,7 +119,7 @@ NameToCode = {
 
 
 CodeToName = {}
-for name, code in list(NameToCode.items()):
+for name, code in NameToCode.items():
     CodeToName[code] = name
 
 
@@ -165,7 +165,7 @@ NameToChar = {
 
 CharToName = {}
 CharToCode = {}
-for name, char in list(NameToChar.items()):
+for name, char in NameToChar.items():
     CharToName[char] = name
     CharToCode[char] = NameToCode[name]
 
@@ -264,7 +264,7 @@ CodeToFrame = {
 
 
 FrameToCode = {}
-for code, frame in list(CodeToFrame.items()):
+for code, frame in CodeToFrame.items():
     FrameToCode[frame] = code
 
 

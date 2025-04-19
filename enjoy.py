@@ -62,7 +62,7 @@ env = make_vec_envs(env_name, args.seed + 1000, 1,
                     None, args.load_dir, args.add_timestep, device=device,
                     allow_early_resets=False,
                     args=dummy_args)
-print(args.load_dir)
+print((args.load_dir))
 
 # Get a render function
 # render_func = get_render_func(env)
@@ -115,7 +115,7 @@ if 'fractal' in args.model.lower():
     new_recs = args.n_recs - saved_args.n_recs
     for nr in range(new_recs):
         actor_critic.base.auto_expand()
-    print('expanded network:\n', actor_critic.base)
+    print(('expanded network:\n', actor_critic.base))
     if args.active_column is not None \
             and hasattr(actor_critic.base, 'set_active_column'):
         actor_critic.base.set_active_column(args.active_column)
@@ -158,7 +158,7 @@ if args.evaluate:
     args.inter_shr = saved_args.inter_shr
     args.n_chan = saved_args.n_chan
     args.val_kern = saved_args.val_kern
-    print('steps: ', saved_args.max_step, '\n')
+    print(('steps: ', saved_args.max_step, '\n'))
     evaluator = Evaluator(args, actor_critic, device, frozen=True)
     while True:
         if hasattr(actor_critic.base, 'n_cols'):
@@ -186,7 +186,7 @@ while True:
 
     player_act = None
     if infos[0]:
-        if 'player_move' in infos[0].keys():
+        if 'player_move' in list(infos[0].keys()):
             player_act = infos[0]['player_move']
 
     num_step += 1

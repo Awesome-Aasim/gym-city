@@ -25,6 +25,6 @@ if MicropolisDir not in sys.path:
 if __name__ == "__main__":
     try:
         start()
-    except ConfigurationError, exc:
+    except ConfigurationError as exc:
         sys.stderr.write(str(exc))
         sys.exit(1)

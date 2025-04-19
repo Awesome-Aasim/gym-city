@@ -1,5 +1,5 @@
-from world_pytorch import World as MultiWorld
-from world import World as TradWorld
+from .world_pytorch import World as MultiWorld
+from .world import World as TradWorld
 from random import randint
 import numpy as np
 
@@ -22,7 +22,7 @@ def main():
             w1.state[0][0][x][y] = alive
         s_0 = w0.state[0]
         s_1 = w1.state[0][0].cpu().long().numpy()
-        print(s_0, '\n')
+        print((s_0, '\n'))
        #print(s_1, '\n')
         assert np.array_equal(s_0, s_1)
         for i in range(1000):
@@ -30,9 +30,9 @@ def main():
             w1._tick()
             s_0 = w0.state[0]
             s_1 = w1.state[0][0].cpu().long().numpy()
-            print(s_0, '\n')
+            print((s_0, '\n'))
            #print(s_1, '\n')
             if not np.array_equal(s_0, s_1):
-                print(s_0 ^ s_1)
+                print((s_0 ^ s_1))
                 raise Exception
 

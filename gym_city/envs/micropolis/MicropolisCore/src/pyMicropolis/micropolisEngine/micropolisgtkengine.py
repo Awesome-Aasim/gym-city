@@ -70,8 +70,8 @@
 
 
 from . import micropolisgenericengine
-from . import micropolisengine
-from gi.repository import GObject as gobject
+import micropolisengine
+import gobject
 
 
 ########################################################################
@@ -492,9 +492,7 @@ You have 10 years to turn this swamp back into a city again.""",
 
     def __init__(self, *args, **kw):
 
-        print("kwargs: ", kw)
-
-        self.generic_engine = micropolisgenericengine.MicropolisGenericEngine.__init__(self, *args, **kw)
+        micropolisgenericengine.MicropolisGenericEngine.__init__(self, *args, **kw)
 
         # This must be called at the end of the concrete subclass's
         # init, so it happens last.
@@ -553,7 +551,7 @@ You have 10 years to turn this swamp back into a city again.""",
 
 
     def handle_didGenerateMap(self):
-       #print("handle_didGenerateMap(self)", (self,))
+        print("handle_didGenerateMap(self)", (self,))
         self.sendUpdate('tick')
         self.sendUpdate('editor')
         self.sendUpdate('map')

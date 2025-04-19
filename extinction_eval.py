@@ -87,7 +87,7 @@ class ExtinctionEvaluator():
                             None, args.load_dir, args.add_timestep, device=device,
                             allow_early_resets=False,
                             args=dummy_args)
-        print(args.load_dir)
+        print((args.load_dir))
 
         if isinstance(envs.observation_space, gym.spaces.Discrete):
             in_width = 1
@@ -138,7 +138,7 @@ class ExtinctionEvaluator():
 
             for nr in range(new_recs):
                 actor_critic.base.auto_expand()
-            print('expanded network:\n', actor_critic.base)
+            print(('expanded network:\n', actor_critic.base))
 
             if args.active_column is not None \
                     and hasattr(actor_critic.base, 'set_active_column'):
@@ -196,7 +196,7 @@ class ExtinctionEvaluator():
             player_act = None
 
             if infos[0]:
-                if 'player_move' in infos[0].keys():
+                if 'player_move' in list(infos[0].keys()):
                     player_act = infos[0]['player_move']
            #masks.fill_(0.0 if done else 1.0)
         envs.reset()
@@ -237,12 +237,12 @@ def get_xy(exp_dir):
             step2size[step] = (size, 1)
     xs = []
     ys = []
-    for x, (y, _) in step2size.items():
+    for x, (y, _) in list(step2size.items()):
         xs += [x]
         ys += [y]
-    xy = zip(xs, ys)
+    xy = list(zip(xs, ys))
     xy = sorted(xy, key = lambda x: int(x[0]))
-    xs, ys = zip(*xy)
+    xs, ys = list(zip(*xy))
     return xs, ys
 
 def visualize_experiments(log_dir):
@@ -254,9 +254,9 @@ def visualize_experiments(log_dir):
     xtinct_dirs = os.listdir(log_dir)
     xt_dir_paths = [os.path.join(log_dir, xt_dir) for xt_dir in xtinct_dirs]
     # make sure the order of local and global paths correspond
-    dirs_types = zip(xtinct_dirs, xt_dir_paths)
+    dirs_types = list(zip(xtinct_dirs, xt_dir_paths))
     dirs_types = sorted(dirs_types, key = lambda x: str(x[0]))
-    xtinct_dirs, xt_dir_paths = zip(*dirs_types)
+    xtinct_dirs, xt_dir_paths = list(zip(*dirs_types))
     xt_ims = [os.listdir(xt_dir) for xt_dir in xt_dir_paths if not os.path.isfile(xt_dir) ]
 
     for i, trial_name in enumerate(xtinct_dirs):

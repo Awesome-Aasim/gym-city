@@ -96,7 +96,7 @@ def network_graphs():
         for j in range(2 ** i):
             n_j = n_recs - j
             j = j +1
-            print(i, j)
+            print((i, j))
             if not (i == n_recs - 1 and j % 2 == 1):
                 row = globals()['grp_{}'.format(j * (2 ** (n_recs - i - 1)))]
             else:
@@ -189,7 +189,7 @@ def load_data(indir, smooth, bin_size, col=None, header='r', dots=False):
     else:
         infiles = glob.glob(os.path.join(indir, '*.monitor.csv'))
     if len(infiles) == 0:
-        print('no files found at {}'.format(indir))
+        print(('no files found at {}'.format(indir)))
 
     for inf in infiles:
         with open(inf, 'r') as f:
@@ -368,7 +368,7 @@ class Plotter(object):
             figfolder = folder.replace('/logs_eval', '/eval_')
         else:
             figfolder = folder.replace('/logs', '/train_')
-        print('should be saving graph now as {}'.format(figfolder))
+        print(('should be saving graph now as {}'.format(figfolder)))
 
 
         if man:
@@ -401,7 +401,7 @@ class Plotter(object):
         else:
             infiles = glob.glob(os.path.join(self.indir, '*.monitor.csv'))
         if len(infiles) == 0:
-            print('no files found at {}'.format(self.indir))
+            print(('no files found at {}'.format(self.indir)))
 
         i = 0
         net_reward = 0
@@ -431,7 +431,7 @@ class Plotter(object):
         else:
             infiles = glob.glob(os.path.join(self.indir, '*.monitor.csv'))
         if len(infiles) == 0:
-            print('no files found at {}'.format(self.indir))
+            print(('no files found at {}'.format(self.indir)))
 
         mean = self.avgs[col]
         i = 0
@@ -474,7 +474,7 @@ class Plotter(object):
         plt.legend(loc=4)
         figfolder = folder.replace('/logs_eval_', '/eval_')
        #figfolder = folder.replace('/logs', '/train_')
-        print('should be saving graph now as {}'.format(figfolder))
+        print(('should be saving graph now as {}'.format(figfolder)))
         plt.savefig('{}/bar_fig.png'.format(figfolder), format='png')
         plt.show()
         plt.draw()
@@ -503,7 +503,7 @@ def man_eval_plot(indir, n_cols=5, num_steps=200000000, n_proc=20, x_lim=None, y
     else:
         indir = "{}/logs_eval".format(indir)
     win = plotter.visdom_plot(viz, win, indir, title,  "Fractal Net", num_steps=num_steps,
-        n_graphs=range(-1,n_cols), x_lim=x_lim, y_lim=y_lim, man=True, bin_size=100, smooth=smooth)
+        n_graphs=list(range(-1,n_cols)), x_lim=x_lim, y_lim=y_lim, man=True, bin_size=100, smooth=smooth)
     return win
 
 if __name__ == "__main__":

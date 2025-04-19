@@ -69,10 +69,10 @@
 # Import stuff
 
 
-from gi.repository import Gtk as gtk
+import gtk
 import cairo
-from gi.repository import Pango as pango
-from . import micropolisengine
+import pango
+import micropolisengine
 from . import micropolisview
 
 
@@ -106,7 +106,7 @@ class MicropolisMessagesPanel(gtk.Frame):
 
         scrolledWindow = gtk.ScrolledWindow()
         self.scrolledWindow = scrolledWindow
-        scrolledWindow.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.AUTOMATIC)
+        scrolledWindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 
         textView = gtk.TextView()
         self.textView = textView
@@ -114,7 +114,7 @@ class MicropolisMessagesPanel(gtk.Frame):
         self.textBuffer = textBuffer
         textView.set_editable(False)
         textView.set_cursor_visible(False)
-        textView.set_wrap_mode(pango.WrapMode.WORD)
+        textView.set_wrap_mode(gtk.WRAP_WORD)
         textView.set_left_margin(5)
         textView.set_right_margin(5)
 
@@ -122,7 +122,7 @@ class MicropolisMessagesPanel(gtk.Frame):
         scrolledWindow.show()
         textView.show()
 
-        textBuffer.set_text("Micropolis ready!\n", -1)
+        textBuffer.set_text("Micropolis ready!\n")
 
         self.add(scrolledWindow)
 

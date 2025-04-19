@@ -14,7 +14,7 @@ from pyMicropolis.cellEngine import cellpiemenus
 from pyMicropolis.cellEngine import cellwindow
 from pyMicropolis.cellEngine import cellconfigurations
 from pyMicropolis.cellEngine import cellrulecompiler
-from gi.repository import Gtk as gtk
+import gtk
 import random
 import math
 

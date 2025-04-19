@@ -54,7 +54,7 @@ class Teacher(Trainer):
         env_param_lw_bounds = []
         env_param_hi_bounds = []
         i = 0
-        for k, v in env_param_bounds.items():
+        for k, v in list(env_param_bounds.items()):
             if i < num_env_params:
                 env_param_ranges += [abs(v[1] - v[0])]
                 env_param_lw_bounds += [v[0]]
@@ -71,7 +71,7 @@ class Teacher(Trainer):
         self.alp_gmm = alp_gmm
 
         params = OrderedDict()
-        print('\n env_param_bounds', env_param_bounds)
+        print(('\n env_param_bounds', env_param_bounds))
         print(params_vec)
         trial_remaining = args.max_step
         trial_reward = 0
@@ -102,7 +102,7 @@ class Teacher(Trainer):
             # sample random environment parameters
             params_vec = alp_gmm.sample_task()
             prm_i = 0
-            for k, v in env_param_bounds.items():
+            for k, v in list(env_param_bounds.items()):
                 if prm_i < num_env_params:
                     params[k] = params_vec[prm_i]
                     prm_i += 1

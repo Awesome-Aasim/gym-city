@@ -309,7 +309,7 @@ class ESOptimizer:
     def update_dicts_after_transfer(self, source_optim_id, source_optim_theta, stats, keyword):
         eval_key = 'eval_returns_mean_{}_from_others_in_{}'.format(keyword,  # noqa
             self.optim_id)
-        if eval_key not in self.log_data.keys():
+        if eval_key not in list(self.log_data.keys()):
             self.log_data[eval_key] = source_optim_id + '_' + str(stats.eval_returns_mean)
         else:
             self.log_data[eval_key] += '_' + source_optim_id + '_' + str(stats.eval_returns_mean)
@@ -590,7 +590,7 @@ class ESOptimizer:
         best_init_score = None
         best_init_theta = None
 
-        for source_optim in optimizers.values():
+        for source_optim in list(optimizers.values()):
             score = self.evaluate_theta(source_optim.theta)
             if best_init_score == None or score > best_init_score:
                 best_init_score = score

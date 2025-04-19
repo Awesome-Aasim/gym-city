@@ -69,11 +69,9 @@
 # Import stuff
 
 
-from gi.repository import Gtk as gtk
-from gi.repository import Gdk as gdk
+import gtk
 import cairo
-from gi.repository import Pango as pango
-from gi.repository import PangoCairo as pangocairo
+import pango
 
 
 ########################################################################
@@ -120,17 +118,16 @@ class MicropolisView(gtk.DrawingArea):
             self.interests)
 
         self.set_events(
-            gdk.EventMask.EXPOSURE_MASK |
-            gdk.EventMask.ENTER_NOTIFY_MASK |
-            gdk.EventMask.LEAVE_NOTIFY_MASK |
-            gdk.EventMask.POINTER_MOTION_MASK |
-            gdk.EventMask.POINTER_MOTION_HINT_MASK |
-            gdk.EventMask.BUTTON_MOTION_MASK |
-            gdk.EventMask.BUTTON_PRESS_MASK |
-            gdk.EventMask.BUTTON_RELEASE_MASK |
-            gdk.EventMask.SCROLL_MASK)
+            gtk.gdk.EXPOSURE_MASK |
+            gtk.gdk.ENTER_NOTIFY_MASK |
+            gtk.gdk.LEAVE_NOTIFY_MASK |
+            gtk.gdk.POINTER_MOTION_MASK |
+            gtk.gdk.POINTER_MOTION_HINT_MASK |
+            gtk.gdk.BUTTON_MOTION_MASK |
+            gtk.gdk.BUTTON_PRESS_MASK |
+            gtk.gdk.BUTTON_RELEASE_MASK)
 
-        self.connect('draw', self.handleExpose)
+        self.connect('expose_event', self.handleExpose)
         self.connect('enter_notify_event', self.handleEnterNotify)
         self.connect('enter_notify_event', self.handleLeaveNotify)
         self.connect('motion_notify_event', self.handleMotionNotify)
@@ -151,7 +148,8 @@ class MicropolisView(gtk.DrawingArea):
 
     def draw(self, widget=None, event=None):
 
-        ctxWindow = self.get_window().cairo_create()
+        ctxWindow = self.window.cairo_create()
+
         winRect = self.get_allocation()
         winWidth = winRect.width
         winHeight = winRect.height
@@ -178,7 +176,7 @@ class MicropolisView(gtk.DrawingArea):
 
     def update(self, name, *args):
 
-       #print(("MicropolisView update", self, name, args))
+        print("MicropolisView update", self, name, args)
 
         self.queue_draw()
 
@@ -196,7 +194,7 @@ class MicropolisView(gtk.DrawingArea):
         ctx,
         playout):
 
-        playout.set_text(text, -1)
+        playout.set_text(text)
 
         ctx.set_source_rgb(1.0, 1.0, 1.0)
         for dx, dy in (
@@ -204,11 +202,11 @@ class MicropolisView(gtk.DrawingArea):
             (-1,  1), ( 1,  1),
         ):
             ctx.move_to(x + dx, y +  dy)
-            pangocairo.show_layout(ctx, playout)
+            ctx.show_layout(playout)
 
         ctx.set_source_rgb(0.0, 0.0, 0.0)
         ctx.move_to(x, y)
-        pangocairo.show_layout(ctx, playout)
+        ctx.show_layout(playout)
 
 
     def pinMarkupXY(
@@ -249,7 +247,7 @@ class MicropolisView(gtk.DrawingArea):
             x, y, state = self.window.get_pointer()
         elif (hasattr(event, 'is_hint') and
               event.is_hint):
-            _, x, y, state = event.window.get_pointer()
+            x, y, state = event.window.get_pointer()
         else:
             x = event.x
             y = event.y
@@ -282,7 +280,7 @@ class MicropolisView(gtk.DrawingArea):
 
     def handleButtonPress(self, widget, event):
 
-        #print("handleButtonPress", self, event, event.x, event.y)
+        #print "handleButtonPress", self, event, event.x, event.y
 
         if not self.clickable:
             return
@@ -311,7 +309,7 @@ class MicropolisView(gtk.DrawingArea):
 
         direction = event.direction
 
-        #print("handleMouseScroll", direction)
+        #print "handleMouseScroll", direction
 
 
     def pointInRect(self, x, y, rect):

@@ -69,7 +69,7 @@
 
 
 from pyMicropolis.piemenu import piemenu
-from gi.repository import Gtk as gtk
+import gtk
 
 
 ########################################################################
@@ -581,7 +581,7 @@ def main():
     win.add(target)
 
     def setToolAction(toolName):
-        print(("setToolAction", toolName))
+        print("setToolAction", toolName)
 
     pie = MakePie(setToolAction)
     target.setPie(pie)

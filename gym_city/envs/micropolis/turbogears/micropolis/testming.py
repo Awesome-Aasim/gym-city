@@ -41,7 +41,7 @@ def makeTiles(
     
     cols = int(math.floor(tilesWidth / tileSize))
     rows = int(math.ceil(float(tileCount) / float(cols)))
-    print "cols", cols, "rows", rows
+    print("cols", cols, "rows", rows)
 
     bitmaps = {}
 
@@ -75,7 +75,7 @@ def makeTiles(
         di = movie.add(shape)
         movie.nextFrame()
 
-    print "saving " + swfFileName
+    print("saving " + swfFileName)
     movie.save(swfFileName)
 
 

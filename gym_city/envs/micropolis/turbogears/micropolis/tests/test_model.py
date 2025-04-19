@@ -27,19 +27,19 @@ class TestUser(DBTest):
 
     def test_creation(self):
         """Object creation should set the name."""
-        obj = User(user_name = u"creosote",
-                email_address = u"spam@python.not",
-                display_name = u"Mr Creosote",
-                password = u"Wafer-thin Mint")
+        obj = User(user_name = "creosote",
+                email_address = "spam@python.not",
+                display_name = "Mr Creosote",
+                password = "Wafer-thin Mint")
         # mark object as 'to be saved'
         session.save(obj)
         # flush marked obj to db
         session.flush()
-        retrieved_user = User.by_email_address(u'spam@python.not')
+        retrieved_user = User.by_email_address('spam@python.not')
         assert retrieved_user, \
             'User should have been found by email address'
 
-        assert retrieved_user.user_name == u'creosote', \
+        assert retrieved_user.user_name == 'creosote', \
             "User name should have been creosote, not '%s'" % retrieved_user.user_name
-        assert obj.display_name == u"Mr Creosote"
+        assert obj.display_name == "Mr Creosote"
 

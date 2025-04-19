@@ -136,7 +136,7 @@ class TileMap(object):
         self.zone_compat = zone_compat
 #       print(zone_compat)
         self.zones = list(self.zoneSize.keys()) + list(composite_zones.keys())
-        for c in composite_zones.keys():
+        for c in list(composite_zones.keys()):
             self.zoneSize[c] = self.zoneSize[composite_zones[c][0]]
         self.num_zones = len(self.zones)
         self.num_features = self.num_zones - len(composite_zones)
@@ -171,9 +171,9 @@ class TileMap(object):
                 self.zoneSquares["Rubble"] = self.zoneSquares["Rubble_1"]
             else:
                 zone_int = self.zoneInts[z]
-                if z in composite_zones.keys():
+                if z in list(composite_zones.keys()):
                     feature_ints = [self.zoneInts[z1] for z1 in composite_zones[z]]
-                elif z in link_features.keys():
+                elif z in list(link_features.keys()):
                     feature_ints = [self.zoneInts[z1] for z1 in link_features[z]]
                 else:
                     feature_ints = None
@@ -218,7 +218,7 @@ class TileMap(object):
                     net_i = self.road_networks[0, xi, yi]
                    #assert net_i != 0
                     if net_i == 0:
-                        print(self.road_networks, x, y, self.road_net_sizes)
+                        print((self.road_networks, x, y, self.road_net_sizes))
                         print('road label is on map, but not in size dict')
                         raise Exception
                     elif self.road_networks[0, x, y] == 0: # set the build road to match a connecting piece
@@ -226,7 +226,7 @@ class TileMap(object):
                         if net_i in self.road_net_sizes:
                             self.road_net_sizes[net_i] += 1
                         else:
-                            print(self.road_networks, x, y, old_net, 'road label is on map, but not in size dict')
+                            print((self.road_networks, x, y, old_net, 'road label is on map, but not in size dict'))
                             raise Exception
 
                     elif self.road_networks[0, x, y] == net_i: # not a conflict
@@ -269,7 +269,7 @@ class TileMap(object):
                 elif net_i == old_net:
                     self.setRoadNet(xi, yi, net_n)
                 else:
-                    print("found unamissilated net piece while setting it to a new value", self.road_networks, x, y, old_net, net_n, net_i)
+                    print(("found unamissilated net piece while setting it to a new value", self.road_networks, x, y, old_net, net_n, net_i))
                     raise Exception
 
 
@@ -281,7 +281,7 @@ class TileMap(object):
         if old_net in self.road_net_sizes:
             self.road_net_sizes[old_net] -= 1
         else:
-            print(self.road_networks, self.road_net_sizes, x, y, old_net, "road label not in size dict")
+            print((self.road_networks, self.road_net_sizes, x, y, old_net, "road label not in size dict"))
         x0, y0, x1, y1 = max(0, x-1), max(0, y-1), min(x+1, self.MAP_X-1), min(y+1, self.MAP_Y-1) # get adj. coords
         cnx = 0
         cnx_0 = None

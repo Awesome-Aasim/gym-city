@@ -71,7 +71,7 @@
 
 import random
 import math
-from . import micropolisengine
+import micropolisengine
 from . import micropolistool
 from pyMicropolis.tileEngine import tiletool
 
@@ -274,7 +274,7 @@ class MicropolisRobot:
         elif command == 'reset':
             pass
         else:
-            print(("MicropolisRobot.sendCommand: unknown command:", command, args))
+            print("MicropolisRobot.sendCommand: unknown command:", command, args)
 
 
     def destroy(self):
@@ -402,7 +402,7 @@ class MicropolisRobot_PacBot(MicropolisRobot):
         if (dx == 0) and (dy == 0):
             curDir = 'stop'
         elif (dx != 0) and (dy != 0):
-            print(("INVALID DIRECTION!", dx, dy))
+            print("INVALID DIRECTION!", dx, dy)
             dx = 0
             dy = 0
             curDir = 'stop'
@@ -737,7 +737,7 @@ class MicropolisRobot_Xenu(MicropolisRobot):
         if (dx == 0) and (dy == 0):
             curDir = 'stop'
         elif (dx != 0) and (dy != 0):
-            print(("INVALID DIRECTION!", dx, dy))
+            print("INVALID DIRECTION!", dx, dy)
             dx = 0
             dy = 0
             curDir = 'stop'

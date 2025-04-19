@@ -69,11 +69,10 @@
 # Import stuff
 
 
-from gi.repository import Gtk as gtk
+import gtk
 import cairo
-from gi.repository import Pango as pango
-from gi.repository import PangoCairo as pangocairo
-from . import micropolisengine
+import pango
+import micropolisengine
 from . import micropolisview
 
 
@@ -205,7 +204,7 @@ class MicropolisNoticeView(micropolisview.MicropolisView):
             #print markup1
             playout.set_markup(markup1)
             ctx.move_to(10, 10)
-            pangocairo.show_layout(ctx, playout)
+            ctx.show_layout(playout)
 
 
 

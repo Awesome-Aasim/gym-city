@@ -94,7 +94,7 @@ class GameOfLifeEnv(core.Env):
        #print('len of intsToActions: {}\n num tools: {}'.format(len(self.intsToActions), self.num_tools))
        #print(self.intsToActions)
        #print(self.actionsToInts)
-        print('render: ', self.render_gui)
+        print(('render: ', self.render_gui))
 
     def reset(self):
         self.step_count = 0
@@ -141,7 +141,7 @@ class GameOfLifeEnv(core.Env):
                 PLAYER_DEL = False
             z, act_x, act_y = self.intsToActions[a]
             if self.player_step:
-                print('executing player build at: {}, {}'.format(act_x, act_y))
+                print(('executing player build at: {}, {}'.format(act_x, act_y)))
             if PLAYER_DEL:
                 self.world.build_cell(act_x, act_y, alive=False)
         if not self.prebuild or self.step_count < self.prebuild_steps:
@@ -185,11 +185,11 @@ class GameOfLifeEnv(core.Env):
         if event == cv2.EVENT_LBUTTONDOWN:
             a = int(self.actionsToInts[0][x][y])
             self.player_builds += [a]
-            print('q\'d player build at: {}, {}'.format(x, y))
+            print(('q\'d player build at: {}, {}'.format(x, y)))
         elif event == cv2.EVENT_MBUTTONDOWN:
             a = int(self.actionsToInts[0][x][y])
             self.player_builds += [-a]
-            print('q\'d player delete at: {}, {}'.format(x, y))
+            print(('q\'d player delete at: {}, {}'.format(x, y)))
 
 
     def seed(self, seed=None):

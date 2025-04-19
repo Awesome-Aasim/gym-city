@@ -10,9 +10,9 @@
 
 
 import re, os, sys, zipfile, time, math, tempfile, array, random
-import types, urllib, urllib2, code, traceback, signal
+import types, urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse, code, traceback, signal
 import base64, hmac, hashlib, simplejson
-from StringIO import StringIO
+from io import StringIO
 import mimetypes
 import pyamf
 from pyamf import remoting, amf0, amf3
@@ -31,7 +31,7 @@ from turbogears import controllers, scheduler, identity, redirect
 from turbogears import validate, validators, expose, flash, config
 from turbogears.controllers import url
 from micropolis import model
-from model import *
+from .model import *
 
 #import xml.etree.cElementTree as ElementTree
 from pyMicropolis.micropolisEngine.xmlutilities import *
@@ -68,7 +68,7 @@ GoogleAPIIdentityKey = config.get('micropolis.google_api_identity_key', 'XXX')
 
 
 def Base64URLDecode(data):
-    data = data.encode(u'ascii')
+    data = data.encode('ascii')
     data += '=' * (4 - (len(data) % 4))
     return base64.urlsafe_b64decode(data)
 
@@ -82,7 +82,7 @@ def ParseSignedRequest(signed_request):
     user_id = None
     access_token = None
 
-    sig, payload = signed_request.split(u'.', 1)
+    sig, payload = signed_request.split('.', 1)
     sig = Base64URLDecode(sig)
     data = simplejson.loads(Base64URLDecode(payload))
 
@@ -90,11 +90,11 @@ def ParseSignedRequest(signed_request):
         FacebookAppSecret, msg=payload, digestmod=hashlib.sha256).digest()
 
     if sig != expected_sig:
-        print "ERROR: ParseSignedRequest sig", sig, "does not equal expected_sig", expected_sig
+        print("ERROR: ParseSignedRequest sig", sig, "does not equal expected_sig", expected_sig)
         return None
 
     if data['issued_at'] < (time.time() - 86400):
-        print "ERROR: ParseSignedRequest issued_at", data['issued_at'], "expired after", time.time()
+        print("ERROR: ParseSignedRequest issued_at", data['issued_at'], "expired after", time.time())
         return None
 
     return data
@@ -110,20 +110,20 @@ def EncodeMultipartFormdata(fields, files):
     files is a sequence of (name, filename, value) elements for data to be uploaded as files
     Return (content_type, body) ready for httplib.HTTP instance
     """
-    print "EncodeMultipartFormdata BEGIN"
+    print("EncodeMultipartFormdata BEGIN")
     boundary = '----------ThIs_Is_tHe_bouNdaRY_$'
     crlf = '\r\n'
     lines = []
-    print "FIELDS"
+    print("FIELDS")
     for (key, value) in fields:
-        print "FIELD", key, value
+        print("FIELD", key, value)
         lines.append('--' + boundary)
         lines.append('Content-Disposition: form-data; name="%s"' % key)
         lines.append('')
         lines.append(value)
-    print "FILES"
+    print("FILES")
     for (key, filename, value) in files:
-        print "FILE", key, filename, len(value)
+        print("FILE", key, filename, len(value))
         lines.append('--' + boundary)
         lines.append('Content-Disposition: form-data; name="%s"; filename="%s"' % (key, filename))
         lines.append('Content-Type: %s' % GetContentType(filename))
@@ -131,28 +131,28 @@ def EncodeMultipartFormdata(fields, files):
         lines.append(value)
     lines.append('--' + boundary + '--')
     lines.append('')
-    print "JOINING"
+    print("JOINING")
     body = crlf.join(lines)
-    print "BODY", len(body)
+    print("BODY", len(body))
     #print body
     contentType = 'multipart/form-data; boundary=%s' % boundary
     return contentType, body
 
 
-def FacebookAPI(path, params=None, method=u'GET', domain=u'graph', access_token=None, fileNames=None):
+def FacebookAPI(path, params=None, method='GET', domain='graph', access_token=None, fileNames=None):
     #print "FACEBOOKAPI", path, params
     if not params:
         params = {}
     #params[u'method'] = method
-    if u'access_token' not in params and access_token:
-        params[u'access_token'] = access_token
+    if 'access_token' not in params and access_token:
+        params['access_token'] = access_token
 
     if fileNames:
 
         method = 'POST'
         fields = []
         files = []
-        for key in params.keys():
+        for key in list(params.keys()):
             if key in fileNames:
                 files.append((key.encode('utf8'), fileNames[key].encode('utf8'), params[key]))
                 #print files[-1]
@@ -164,22 +164,22 @@ def FacebookAPI(path, params=None, method=u'GET', domain=u'graph', access_token=
 
     else:
 
-        contentType = u'application/x-www-form-urlencoded'
-        body = urllib.urlencode(params)
+        contentType = 'application/x-www-form-urlencoded'
+        body = urllib.parse.urlencode(params)
 
-    print "contentType", contentType, "body", len(body)
+    print("contentType", contentType, "body", len(body))
     
-    print "CALLING FETCHURL", url, len(body)
+    print("CALLING FETCHURL", url, len(body))
     data = FetchURL(
-        url=u'https://' + domain + u'.facebook.com' + path,
+        url='https://' + domain + '.facebook.com' + path,
         payload=body,
         method='POST',
         headers={
-            u'Content-Type': contentType,
+            'Content-Type': contentType,
         })
-    print "CALLED FETCHURL", len(data)
+    print("CALLED FETCHURL", len(data))
     result = simplejson.loads(data)
-    if isinstance(result, dict) and u'error' in result:
+    if isinstance(result, dict) and 'error' in result:
         raise Exception(result)
     return result
 
@@ -190,24 +190,24 @@ def FetchURL(
     method=None,
     headers=None):
 
-    print "FETCHURL", url, method, headers
+    print("FETCHURL", url, method, headers)
 
-    req = urllib2.Request(
+    req = urllib.request.Request(
         url=url,
         data=payload)
-    print "REQ", req
+    print("REQ", req)
 
     if headers:
-        for key in headers.keys():
+        for key in list(headers.keys()):
             req.add_header(key, headers[key])
 
-    print "opening", req
-    f = urllib2.urlopen(req)
-    print "opened", f
+    print("opening", req)
+    f = urllib.request.urlopen(req)
+    print("opened", f)
 
     data = f.read()
 
-    print "data", len(data)
+    print("data", len(data))
 
     #print "RESULT:", data
     
@@ -231,13 +231,13 @@ def GetFacebookAccessToken():
     return token
 
 
-def GetFacebookUser(userID, fields=u'picture,education'):
+def GetFacebookUser(userID, fields='picture,education'):
     access_token = GetFacebookAccessToken()
 
-    url = u'/' + str(userID)
+    url = '/' + str(userID)
     params = {
-        u'fields': fields,
-        u'access_token': access_token,
+        'fields': fields,
+        'access_token': access_token,
     }
 
     me = None
@@ -245,8 +245,8 @@ def GetFacebookUser(userID, fields=u'picture,education'):
         me = FacebookAPI(
             url,
             params)
-    except Exception, e:
-        print "ERROR CALLING FacebookAPI", url, params, e
+    except Exception as e:
+        print("ERROR CALLING FacebookAPI", url, params, e)
 
     return me
 
@@ -275,7 +275,7 @@ def GetFacebookPayments(startTime=0, endTime=0, status='settled'):
             since=since,
             until=until,
             access_token=access_token)
-        print "URL", url
+        print("URL", url)
 
         result = FetchURL(url)
         #print "RESULT", result
@@ -287,7 +287,7 @@ def GetFacebookPayments(startTime=0, endTime=0, status='settled'):
         results += payments
         since += duration
 
-    print "TOTAL PAYMENT COUNT", len(results)
+    print("TOTAL PAYMENT COUNT", len(results))
     return results
 
 
@@ -489,7 +489,7 @@ class Root(controllers.RootController):
             description='Poll the simulation.',
             expose_request=True)
 
-        print "GATWAY SERVICES", gateway.services
+        print("GATWAY SERVICES", gateway.services)
 
         scheduler.add_interval_task(
             action=self.makeHeartBeat,
@@ -516,7 +516,7 @@ class Root(controllers.RootController):
             { 
                 'cookie': cookie,
             })
-        data = urllib.urlopen(hbUrl).read()
+        data = urllib.request.urlopen(hbUrl).read()
         #print data,
         sys.stdout.flush()
 
@@ -546,36 +546,36 @@ class Root(controllers.RootController):
 
         try:
             doc = xml.dom.minidom.parse(stringsPath)
-        except Exception, e:
-            print "Error parsing xml file", stringsPath, e
+        except Exception as e:
+            print("Error parsing xml file", stringsPath, e)
             return [], None, None, None
 
         stringsEl = doc.firstChild
-        if (stringsEl.nodeType != 1) or (stringsEl.nodeName != u'strings'):
-            print "Strings file should contain top level <strings> element.", stringsPath
+        if (stringsEl.nodeType != 1) or (stringsEl.nodeName != 'strings'):
+            print("Strings file should contain top level <strings> element.", stringsPath)
             return [], None, None, None
 
         strings = []
         stringEls = {}
         el = stringsEl.firstChild
         while el:
-            if (el.nodeType == 1) and (el.nodeName == u'string'):
+            if (el.nodeType == 1) and (el.nodeName == 'string'):
                 if not el.hasAttribute('id'):
-                    print "Expected id attribute on string element:", el.toxml().encode('utf-8')
+                    print("Expected id attribute on string element:", el.toxml().encode('utf-8'))
                 else:
                     id = el.getAttribute("id")
                     if el.hasAttribute('comment'):
                         comment = el.getAttribute('comment')
                     else:
                         comment = None
-                    text = u''
+                    text = ''
                     subEl = el.firstChild
                     while subEl:
                         if subEl.nodeType == 3:
                             text += subEl.data
                         subEl = subEl.nextSibling
                     if id in stringEls:
-                        print "Duplicate string id:", language, id, text, comment
+                        print("Duplicate string id:", language, id, text, comment)
                     else:
                         strings.append((id, text, comment))
                         stringEls[id] = el
@@ -633,7 +633,7 @@ class Root(controllers.RootController):
             return session
 
         if args == None:
-            print "ERROR: controller getSession args is None!", sessionID
+            print("ERROR: controller getSession args is None!", sessionID)
             #return None
 
         session = micropolisturbogearsengine.Session(self, sessionID, args)
@@ -652,7 +652,7 @@ class Root(controllers.RootController):
     #
     def getSessions(self):
         self.expireSessions()
-        return self.sessions.values()
+        return list(self.sessions.values())
 
 
     ########################################################################
@@ -662,7 +662,7 @@ class Root(controllers.RootController):
     #
     def expireSessions(self):
         oldSessions = []
-        for session in self.sessions.values():
+        for session in list(self.sessions.values()):
             if session.isExpired():
                 oldSessions.append(session)
         for session in oldSessions:
@@ -900,7 +900,7 @@ class Root(controllers.RootController):
             endTime = now
 
         payments = GetFacebookPayments(startTime, endTime)
-        print "PAYMENTS", payments
+        print("PAYMENTS", payments)
 
         return {
             'payment_id': payment_id,
@@ -984,16 +984,16 @@ class Root(controllers.RootController):
 
         if product:
             products = [product]
-            print "ONE PRODUCT", products
+            print("ONE PRODUCT", products)
         else:
             products = list(Product.query.filter_by(active=True).order_by(Product.sequence).all())
             item_id = None
-            print "MANY PRODUCTS", products
+            print("MANY PRODUCTS", products)
 
         user_id = ''
         if not turbogears.identity.current.anonymous:
             user_id = str(turbogears.identity.current.user.facebook_user_id)
-            print "Got user id", user_id
+            print("Got user id", user_id)
 
         return {
             'item_id': item_id,
@@ -1206,12 +1206,12 @@ class Root(controllers.RootController):
         self,
         cookie=''):
         if cookie != self.heartBeatCookie:
-            print "Unexpected heart beat cookie -- got", cookie, "expected", self.heartBeatCookie
+            print("Unexpected heart beat cookie -- got", cookie, "expected", self.heartBeatCookie)
             return 'skip'
 
         #print "CONTROLLER heartBeat"
         self.expireSessions()
-        sessions = self.sessions.values()
+        sessions = list(self.sessions.values())
         #print len(sessions), "sessions"
         engines = set()
         for session in sessions:
@@ -1262,7 +1262,7 @@ class Root(controllers.RootController):
             defaultStringMapKeys = set(defaultStringMap.keys())
 
             newStrings = {}
-            for key in kw.keys():
+            for key in list(kw.keys()):
                 if key[:7] == 'string_':
                     num = int(key[7:])
                     id = strings[num][0]
@@ -1280,7 +1280,7 @@ class Root(controllers.RootController):
                     #print "TT2", repr(idDefault), repr(textTranslated)
                     stringMapKeys.remove(idDefault)
                 else:
-                    textTranslated = u'@' + language + '@ ' + textDefault
+                    textTranslated = '@' + language + '@ ' + textDefault
                     #print "TT3", repr(idDefault), repr(textTranslated)
 
                 el = defaultStringEls[idDefault]
@@ -1291,15 +1291,15 @@ class Root(controllers.RootController):
                 el.appendChild(defaultDoc.createTextNode(textTranslated))
                 
             if stringMapKeys:
-                print "Extra strings left over in ", language, "translation"
+                print("Extra strings left over in ", language, "translation")
                 for idString in stringMapKeys:
-                    print stringMap[idString]
+                    print(stringMap[idString])
 
             try:
                 os.path.rename(stringsPath, stringsPath + '.bak')
             except: pass
 
-            print "Writing new strings to", stringsPath
+            print("Writing new strings to", stringsPath)
             f = open(stringsPath, 'w')
             f.write(defaultDoc.toxml())
             f.close()
@@ -1434,14 +1434,14 @@ class Root(controllers.RootController):
         # Allow the signed_request to work for up to 1 day.
         if data:
 
-            user_id = data.get(u'user_id', '')
-            access_token = data.get(u'oauth_token', '')
+            user_id = data.get('user_id', '')
+            access_token = data.get('oauth_token', '')
 
             if user_id:
 
                 payload = Base64URLEncode(simplejson.dumps({
-                    u'user_id': user_id,
-                    u'issued_at': str(int(time.time())),
+                    'user_id': user_id,
+                    'issued_at': str(int(time.time())),
                 }))
 
                 sig = Base64URLEncode(
@@ -1462,26 +1462,26 @@ class Root(controllers.RootController):
             #print "Getting me...", "access_token", access_token
             try:
                 params = {
-                    u'fields': u'picture,friends',
-                    u'access_token': access_token,
+                    'fields': 'picture,friends',
+                    'access_token': access_token,
                 }
                 me = FacebookAPI(
-                    u'/me',
+                    '/me',
                     params)
-            except Exception, e:
-                print "ERROR CALLING FacebookAPI", "/me", params, e
+            except Exception as e:
+                print("ERROR CALLING FacebookAPI", "/me", params, e)
 
             if me:
                 pass#print "Got me:", me.get('name', '???'), me.get('picture', '???')
             else:
-                print "FACEBOOKCANVAS ERROR: Got access_token but I can't find out who me is! data", data
+                print("FACEBOOKCANVAS ERROR: Got access_token but I can't find out who me is! data", data)
 
         if me and user_id:
 
             user = User.by_facebook_user_id(user_id)
 
             if not user:
-                print "FACEBOOKCANVAS Creating new user_id", user_id, "me", me
+                print("FACEBOOKCANVAS Creating new user_id", user_id, "me", me)
                 user = User(
                     facebook_user_id=user_id,
                     user_name=user_id,
@@ -1507,10 +1507,10 @@ class Root(controllers.RootController):
 
         if fb_page_id:
             params = {
-                u'access_token': access_token,
+                'access_token': access_token,
             }
             page = FacebookAPI(
-                u'/page/' + str(fb_page_id),
+                '/page/' + str(fb_page_id),
                 params)
             #print "FACEBOOKCANVAS Page", page
 
@@ -1557,31 +1557,31 @@ class Root(controllers.RootController):
         *args,
         **kw):
 
-        print "\nFACEBOOKDEAUTHROIZE", request.method, "ARGS", args, "KW", kw
+        print("\nFACEBOOKDEAUTHROIZE", request.method, "ARGS", args, "KW", kw)
 
         if not signed_request:
-            print "FACEBOOKDEAUTHROIZE ERROR: missing signed_request"
+            print("FACEBOOKDEAUTHROIZE ERROR: missing signed_request")
             return ""
         
         data = ParseSignedRequest(signed_request)
         if not data:
-            print "FACEBOOKDEAUTHROIZE ERROR: invalid signed_request", signed_request
+            print("FACEBOOKDEAUTHROIZE ERROR: invalid signed_request", signed_request)
             return ""
 
-        print data
+        print(data)
 
-        user_id = data.get(u'user_id', '')
+        user_id = data.get('user_id', '')
         if not user_id:
-            print "FACEBOOKDEAUTHROIZE ERROR: missing user_id in signed request data", data
+            print("FACEBOOKDEAUTHROIZE ERROR: missing user_id in signed request data", data)
             return ""
 
         user = User.query.filter_by(facebook_user_id=user_id).first()
         if not user:
-            print "FACEBOOKDEAUTHROIZE ERROR: unknown user_id", user_id
+            print("FACEBOOKDEAUTHROIZE ERROR: unknown user_id", user_id)
             return ""
 
         # TODO: Remember that the user is de-authorized.
-        print "FACEBOOKDEAUTHROIZE deauthorized user_id", user_id, "user", user
+        print("FACEBOOKDEAUTHROIZE deauthorized user_id", user_id, "user", user)
 
         return ""
 
@@ -1603,7 +1603,7 @@ class Root(controllers.RootController):
         *args,
         **kw):
 
-        print "\nFACEBOOKPAGEADMIN", "FB_PAGE_ID", fb_page_id, "METHOD", request.method, "ARGS", args, "KW", kw
+        print("\nFACEBOOKPAGEADMIN", "FB_PAGE_ID", fb_page_id, "METHOD", request.method, "ARGS", args, "KW", kw)
 
         return {
         }
@@ -1644,7 +1644,7 @@ class Root(controllers.RootController):
 
             credits = data.get('credits')
             if not credits:
-                print "FACEBOOKCREDITS ERROR: payments_get_items signed request missing credits"
+                print("FACEBOOKCREDITS ERROR: payments_get_items signed request missing credits")
                 return "{}"
             #print "CREDITS", credits
             
@@ -1661,7 +1661,7 @@ class Root(controllers.RootController):
 
             product = Product.query.filter_by(item_id=item_id).first()
             if not product:
-                print "Unknown Product item_id:", item_id
+                print("Unknown Product item_id:", item_id)
                 return "{}"
             #print "PRODUCT", product
 
@@ -1673,43 +1673,43 @@ class Root(controllers.RootController):
 
             me = GetFacebookUser(buyer)
             if me:
-                print "ME", me
+                print("ME", me)
 
             order = Order.query.filter_by(facebook_order_id=order_id).first()
             if order:
-                print "FOUND EXISTING ORDER", order_id, order
+                print("FOUND EXISTING ORDER", order_id, order)
             else:
-                print "MAKING NEW ORDER"
+                print("MAKING NEW ORDER")
                 order = Order(
                     facebook_order_id=order_id.decode('utf8'),
                     item_id=item_id.decode('utf8'),
-                    order_details=u'',
+                    order_details='',
                     order_info=order_info.decode('utf8'),
                     price=price,
                     title=title.decode('utf8'),
                     description=description.decode('utf8'),
                     image_url=image_url.decode('utf8'),
                     product_url=product_url.decode('utf8'),
-                    from_user_name=u'',
-                    from_user_id=u'',
-                    to_user_name=u'',
-                    to_user_id=u'',
+                    from_user_name='',
+                    from_user_id='',
+                    to_user_name='',
+                    to_user_id='',
                     user_id=None,
                     product_id=product.product_id,
                     amount=product.price,
-                    status=u'new',
+                    status='new',
                     confirmed_settled=False,
-                    application_name=u'',
-                    application_id=u'',
-                    country=u'',
+                    application_name='',
+                    application_id='',
+                    country='',
                     created=datetime.now(),
                     updated=datetime.now(),
-                    refund_code=u'',
-                    refund_message=u'',
+                    refund_code='',
+                    refund_message='',
                     refund_funding_source=False,
-                    refund_params=u'',
-                    comments=u'')
-                print "CREATED ORDER", order_id, order
+                    refund_params='',
+                    comments='')
+                print("CREATED ORDER", order_id, order)
 
             response = {
                 'content': [
@@ -1773,28 +1773,28 @@ class Root(controllers.RootController):
             # Get the user_id from the data.
             user_id = data.get('user_id')
             if not user_id:
-                print "FACEBOOKCREDITS ERROR: MISSING user_id from data", data
+                print("FACEBOOKCREDITS ERROR: MISSING user_id from data", data)
                 return "{}"
             #print "USER_ID", user_id
 
             # Get the user from the database.
             user = User.query.filter_by(facebook_user_id=user_id).first()
             if not user:
-                print "FACEBOOKCREDITS ERROR: MISSING user buyer", buyer, "order_details", order_details
+                print("FACEBOOKCREDITS ERROR: MISSING user buyer", buyer, "order_details", order_details)
                 return "{}"
             #print "USER", user
 
             # Get the credits from the data.
             credits = data['credits']
             if not credits:
-                print "FACEBOOKCREDITS ERROR: MISSING credits from data", data
+                print("FACEBOOKCREDITS ERROR: MISSING credits from data", data)
                 return "{}"
             #print "CREDITS", credits
 
             # Get the status from the credits.
             status = credits.get('status')
             if not status:
-                print "FACEBOOKCREDITS ERROR: MISSING status from credits", credits
+                print("FACEBOOKCREDITS ERROR: MISSING status from credits", credits)
                 return "{}"
             #print "STATUS", status
 
@@ -1805,21 +1805,21 @@ class Root(controllers.RootController):
             # Get the order_id from the credits.
             order_id = credits.get('order_id')
             if not order_id:
-                print "FACEBOOKCREDITS ERROR: MISSING order_id from credits", credits
+                print("FACEBOOKCREDITS ERROR: MISSING order_id from credits", credits)
                 return "{}"
             #print "ORDER_ID", order_id
 
             # Get the order form the database.
             order = Order.query.filter_by(facebook_order_id=order_id).first()
             if not order:
-                print "FACEBOOKCREDITS ERROR: MISSING order", order_id
+                print("FACEBOOKCREDITS ERROR: MISSING order", order_id)
                 return "{}"
             #print "ORDER", order_id, order
 
             # Get the order_details from the credits.
             order_details_json = credits.get('order_details')
             if not order_details_json:
-                print "FACEBOOKCREDITS ERROR: MISSING order_details from credits", credits
+                print("FACEBOOKCREDITS ERROR: MISSING order_details from credits", credits)
                 return "{}"
             order_details = simplejson.loads(order_details_json)
             #print "ORDER_DETAILS", order_details
@@ -1827,10 +1827,10 @@ class Root(controllers.RootController):
             # Get the item from the order_details.
             items = order_details.get('items')
             if (not items):
-                print "FACEBOOKCREDITS ERROR: MISSING items from order_details", order_details
+                print("FACEBOOKCREDITS ERROR: MISSING items from order_details", order_details)
                 return "{}"
             if len(items) != 1:
-                print "FACEBOOKCREDITS ERROR: WRONG number of items from order_details", items
+                print("FACEBOOKCREDITS ERROR: WRONG number of items from order_details", items)
                 return "{}"
             item = items[0]
             #print "ITEM", item
@@ -1838,24 +1838,24 @@ class Root(controllers.RootController):
             # Get the product item id from the item.
             product_item_id = item.get('data')
             if not product_item_id:
-                print "FACEBOOKCREDITS ERROR: MISSING product_item_id data from item", item
+                print("FACEBOOKCREDITS ERROR: MISSING product_item_id data from item", item)
                 return "{}"
             #print "PRODUCT_ITEM_ID", product_item_id
 
             # Get the product from the database.
             product = Product.query.filter_by(item_id=product_item_id).first()
             if not product:
-                print "FACEBOOKCREDITS ERROR: MISSING Product product_item_id", product_item_id
+                print("FACEBOOKCREDITS ERROR: MISSING Product product_item_id", product_item_id)
                 return "{}"
             #print "PRODUCT", product
 
             # Get the product_data from the product.
             if not product.data:
-                print "FACEBOOKCREDITS ERROR: EMPTY product.data from product", product
+                print("FACEBOOKCREDITS ERROR: EMPTY product.data from product", product)
                 return "{}"
             product_data = simplejson.loads(product.data)
             if not product_data:
-                print "FACEBOOKCREDITS ERROR: NULL product_data", product.data
+                print("FACEBOOKCREDITS ERROR: NULL product_data", product.data)
                 return "{}"
             #print "PRODUCT_DATA", product_data
 
@@ -1872,7 +1872,7 @@ class Root(controllers.RootController):
                 order.test_mode = test_mode
                 order.updated = datetime.now()
 
-                print "FACEBOOKCREDITS SUCCESS status placed", order
+                print("FACEBOOKCREDITS SUCCESS status placed", order)
 
             elif status == 'settled':
 
@@ -1882,11 +1882,11 @@ class Root(controllers.RootController):
                 order.confirmed_settled = True
                 new_status = status
 
-                print "FACEBOOKCREDITS SUCCESS status settled", order
+                print("FACEBOOKCREDITS SUCCESS status settled", order)
 
             else:
 
-                print "FACEBOOKCREDITS ERROR: WRONG status", status, "credits", credits
+                print("FACEBOOKCREDITS ERROR: WRONG status", status, "credits", credits)
                 return "{}"
 
             response = {
@@ -1897,13 +1897,13 @@ class Root(controllers.RootController):
                 'method': 'payments_status_update',
             }
 
-            print "RESPONSE", response
+            print("RESPONSE", response)
 
             return simplejson.dumps(response)
 
         else:
 
-            print "FACEBOOKCREDITS ERROR: unexpected method", method
+            print("FACEBOOKCREDITS ERROR: unexpected method", method)
 
         return {}
 

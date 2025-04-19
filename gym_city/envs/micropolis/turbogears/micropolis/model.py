@@ -224,7 +224,7 @@ class Permission(object):
 
     @classmethod
     def getAdminPermission(cls):
-        return cls.by_name(u'admin')
+        return cls.by_name('admin')
 
 
 class User(object):
@@ -311,7 +311,7 @@ class User(object):
                 'updated': city.updated.toordinal(),
                 'icon': iconURL,
             }
-            print city, city.shared, d
+            print(city, city.shared, d)
             savedCities.append(d)
 
         savedCities.sort(
@@ -351,27 +351,27 @@ class User(object):
 
         product_type = product_data.get('type')
         if not product_type:
-            print "User purchaseProduct ERROR: missing type from product_data", product_data
+            print("User purchaseProduct ERROR: missing type from product_data", product_data)
             return 'canceled'
 
         if product_type == 'micropoleans':
 
             city = self.getCurrentCity()
             if not city:
-                print "User purchaseProduct micropoleans ERROR: user missing current city", self
+                print("User purchaseProduct micropoleans ERROR: user missing current city", self)
                 return 'canceled'
                 
             micropoleans = product_data.get('micropoleans')
             if not micropoleans:
-                print "User purchaseProduct micropoleans ERROR: missing micropoleans from product_data", product_data, order
+                print("User purchaseProduct micropoleans ERROR: missing micropoleans from product_data", product_data, order)
                 return 'canceled'
 
             if dry_run:
-                print "User purchaseProduct micropoleans SUCCESS: DRY_RUN: Will add", micropoleans, "credit, now", city.micropoleans_credit, "city", city, "user", self
+                print("User purchaseProduct micropoleans SUCCESS: DRY_RUN: Will add", micropoleans, "credit, now", city.micropoleans_credit, "city", city, "user", self)
             else:                
                 city.micropoleans_credit += micropoleans
                 self.credits_paid += order.price
-                print "User purchaseProduct micropoleans SUCCESS: Added", micropoleans, "credit, now", city.micropoleans_credit, "city", city, "user", self
+                print("User purchaseProduct micropoleans SUCCESS: Added", micropoleans, "credit, now", city.micropoleans_credit, "city", city, "user", self)
 
         elif product_type == 'save_slot':
 
@@ -379,45 +379,45 @@ class User(object):
             self.credits_paid += order.price
 
             if dry_run:
-                print "User purchaseProduct save_slot SUCCESS: DRY_RUN: Will add 1 save slot, now", self.save_slots, "user", self
+                print("User purchaseProduct save_slot SUCCESS: DRY_RUN: Will add 1 save slot, now", self.save_slots, "user", self)
             else:
-                print "User purchaseProduct save_slot SUCCESS: Added 1 save slot, now", self.save_slots, "user", self
+                print("User purchaseProduct save_slot SUCCESS: Added 1 save slot, now", self.save_slots, "user", self)
 
         elif product_type == 'protection':
 
             city = self.getCurrentCity()
             if not city:
-                print "User purchaseProduct protection ERROR: user missing current city", self
+                print("User purchaseProduct protection ERROR: user missing current city", self)
                 return 'canceled'
                 
             if city.protection:
-                print "User purchaseProduct protection ERROR: city already is protected", city, "user", self
+                print("User purchaseProduct protection ERROR: city already is protected", city, "user", self)
                 return 'canceled'
 
             if dry_run:
-                print "User purchaseProduct protection SUCCESS: DRY_RUN: Will set protection for city", city, "user", self
+                print("User purchaseProduct protection SUCCESS: DRY_RUN: Will set protection for city", city, "user", self)
             else:
                 city.protection = True
                 self.credits_paid += order.price
-                print "User purchaseProduct protection SUCCESS: Set protection for city", city, "user", self
+                print("User purchaseProduct protection SUCCESS: Set protection for city", city, "user", self)
 
         elif product_type == 'karma':
 
             karma = product_data.get('karma')
             if not karma:
-                print "User purchaseProduct karma ERROR: missing karma from product_data", product_data, order
+                print("User purchaseProduct karma ERROR: missing karma from product_data", product_data, order)
                 return 'canceled'
 
             if dry_run:
-                print "User purchaseProduct karma SUCCESS: DRY_RUN: Will add", karma, "to user karma, now", self.karma, "user", self
+                print("User purchaseProduct karma SUCCESS: DRY_RUN: Will add", karma, "to user karma, now", self.karma, "user", self)
             else:
                 self.karma += karma
                 self.credits_paid += order.price
-                print "User purchaseProduct karma SUCCESS: Added", karma, "to user karma, now", self.karma, "user", self
+                print("User purchaseProduct karma SUCCESS: Added", karma, "to user karma, now", self.karma, "user", self)
 
         else:
 
-            print "User purchaseProduct ERROR: unknown product_type", product_type, product_data, product, order
+            print("User purchaseProduct ERROR: unknown product_type", product_type, product_data, product, order)
             return 'canceled'
 
         return 'settled'

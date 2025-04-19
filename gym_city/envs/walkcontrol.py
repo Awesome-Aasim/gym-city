@@ -24,7 +24,7 @@ from pyMicropolis.gtkFrontend import main
 if sys.version_info[0] >= 3:
     from . tilemap import TileMap
 else:
-    from tilemap import TileMap
+    from .tilemap import TileMap
 os.chdir(CURR_DIR)
 
 class MicroWalkControl():

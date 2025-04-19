@@ -40,7 +40,7 @@
 #
 # This disclaimer supplements the one included in the General Public
 # License.  TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, THIS
-# PROGRAM IS PROVIDED TO YOU "AS IS," WITH ALL FAULTS, WITHOUT WARRANT      returnY
+# PROGRAM IS PROVIDED TO YOU "AS IS," WITH ALL FAULTS, WITHOUT WARRANTY
 # OF ANY KIND, AND YOUR USE IS AT YOUR SOLE RISK.  THE ENTIRE RISK OF
 # SATISFACTORY QUALITY AND PERFORMANCE RESIDES WITH YOU.  ELECTRONIC ARTS
 # DISCLAIMS ANY AND ALL EXPRESS, IMPLIED OR STATUTORY WARRANTIES,
@@ -73,12 +73,12 @@ import sys
 import os
 import time
 import random
-from . import micropolisengine
-from gi.repository import GObject as gobject
+import micropolisengine
+import gobject
 import cairo
 from .xmlutilities import *
 from pyMicropolis.tileEngine import tileengine
-from .micropolisengine import *
+from micropolisengine import *
 from . import micropoliszone
 import xml.dom.minidom
 from xml.dom.minidom import Node
@@ -91,9 +91,7 @@ from io import StringIO
 
 
 __version__ = "0.9"
-import gym_city
-impath = os.path.abspath(os.path.join(gym_city.__path__[0],
-    'envs/micropolis/MicropolisCore/src/images'))
+
 
 ########################################################################
 # MicropolisGenericEngine Class
@@ -101,39 +99,34 @@ impath = os.path.abspath(os.path.join(gym_city.__path__[0],
 
 class MicropolisGenericEngine(micropolisengine.Micropolis):
 
+
     dataColorMap = \
         cairo.ImageSurface.create_from_png(
-            '{}/micropolisEngine/dataColorMap.png'.format(impath))
+            'images/micropolisEngine/dataColorMap.png')
 
     rateColorMap = \
         cairo.ImageSurface.create_from_png(
-            '{}/micropolisEngine/rateColorMap.png'.format(impath))
+            'images/micropolisEngine/rateColorMap.png')
 
     powerGridColorMap = \
         cairo.ImageSurface.create_from_png(
-            '{}/micropolisEngine/powerGridColorMap.png'.format(impath))
+            'images/micropolisEngine/powerGridColorMap.png')
 
     terrainColorMap = \
         cairo.ImageSurface.create_from_png(
-            '{}/micropolisEngine/terrainColorMap.png'.format(impath))
+            'images/micropolisEngine/terrainColorMap.png')
 
 
     def __init__(
             self,
             running=False,
             timeDelay=10,
-            env=None,
-            rank=None,
-            root_gtk=None,
             *args,
             **kwargs):
         #print "MicropolisGenericEngine.__init__", self, "calling micropolisengine.Micropolis.__init__", micropolisengine.Micropolis.__init__, args, kwargs
 
         micropolisengine.Micropolis.__init__(self, *args, **kwargs)
 
-        self.env = env
-        self.builderBot = self.env.micro
-        self.rank = rank
         self.resourceDir = 'res'
         self.running = running
         self.timeDelay = timeDelay
@@ -200,8 +193,6 @@ class MicropolisGenericEngine(micropolisengine.Micropolis):
         if self.running:
             self.startTimer()
 
-        return self
-
         #print "MicropolisEngine.__init__ done", self
 
 
@@ -262,14 +253,14 @@ class MicropolisGenericEngine(micropolisengine.Micropolis):
         views = self.views
         if view not in views:
             self.views.append(view)
-            print(("ADDVIEW", view))
+            print("ADDVIEW", view)
 
 
     def removeView(self, view):
         views = self.views
         if view in views:
             views.remove(view)
-            print(("REMOVEVIEW", view))
+            print("REMOVEVIEW", view)
 
 
     def getMapImage(
@@ -301,7 +292,7 @@ class MicropolisGenericEngine(micropolisengine.Micropolis):
             ((height % tileHeight) != 0) or
             # Size must be 1:1 aspect ratio.
             (tileWidth != tileHeight)):
-            print(("MicropolisGenericEngine getMapImage invalid size", width, height))
+            print("MicropolisGenericEngine getMapImage invalid size", width, height)
             return None
 
         tileSize = tileWidth
@@ -385,7 +376,7 @@ class MicropolisGenericEngine(micropolisengine.Micropolis):
         elif name == 'policecoverage':
             return self.getPoliceCoverageImageAlphaSize()
         else:
-            print(("MicropolisGenericEngine: getImageAlphaSize: Invalid data image name:", name))
+            print("MicropolisGenericEngine: getImageAlphaSize: Invalid data image name:", name)
             return None, 0.0, 0.0, 0.0
 
 
@@ -922,7 +913,7 @@ class MicropolisGenericEngine(micropolisengine.Micropolis):
 
         if name == 'paused':
             self.running = not self.simPaused
-            print(("PAUSED", self.simPaused, "running", self.running))
+            print("PAUSED", self.simPaused, "running", self.running)
             if self.running:
                 self.startTimer()
             else:
@@ -1048,7 +1039,7 @@ class MicropolisGenericEngine(micropolisengine.Micropolis):
     def loadMetaScenario(self, id):
         if ((id <= micropolisengine.SC_NONE) or
             (id >= micropolisengine.SC_COUNT)):
-            print(("loadMetaScenario: Invalid scenario id:", id))
+            print("loadMetaScenario: Invalid scenario id:", id)
             return
 
         if False: # TODO
@@ -1078,9 +1069,9 @@ class MicropolisGenericEngine(micropolisengine.Micropolis):
 
     def dumpRobots(self):
         robots = self.robots
-        print(("==== robots", len(robots)))
+        print("==== robots", len(robots))
         for robot in robots:
-            print(("robot", robot.x, robot.y, "zone", robot.zone.x, robot.zone.y, robot, robot.zone))
+            print("robot", robot.x, robot.y, "zone", robot.zone.x, robot.zone.y, robot, robot.zone)
 
 
     def addRobot(self, robot):
@@ -1192,45 +1183,43 @@ class MicropolisGenericEngine(micropolisengine.Micropolis):
             handler(*args)
             #print "Called handler."
         else:
-            print(("No handler for", name))
+            print("No handler for", name)
 
 
     def handle_autoGoto(self, x, y):
-        print(("handle_autoGoto(self, x, y)", (self, x, y)))
+        print("handle_autoGoto(self, x, y)", (self, x, y))
 
 
     def handle_didGenerateMap(self):
-       #print(("handle_didGenerateMap(self)", (self,)))
-        return
+        print("handle_didGenerateMap(self)", (self,))
+
 
     def handle_didLoadCity(self):
-        print(("handle_didLoadCity(self)", (self,)))
+        print("handle_didLoadCity(self)", (self,))
 
 
     def handle_didLoadScenario(self):
-        print(("handle_didLoadScenario(self)", (self,)))
+        print("handle_didLoadScenario(self)", (self,))
 
 
     def handle_didSaveCity(self):
-        print(("handle_didSaveCity(self)", (self,)))
+        print("handle_didSaveCity(self)", (self,))
 
 
     def handle_didTool(self, name, x, y):
-        pass
-       #self.builderBot.render()
-       #print("handle_didTool(self, name, x, y)", (self, name, x, y))
+        print("handle_didTool(self, name, x, y)", (self, name, x, y))
 
 
     def handle_didntLoadCity(self, msg):
-        print(("handle_didntLoadCity(self, msg)", (self, msg)))
+        print("handle_didntLoadCity(self, msg)", (self, msg))
 
 
     def handle_didntSaveCity(self, msg):
-        print(("handle_didntSaveCity(self, msg)", (self, msg)))
+        print("handle_didntSaveCity(self, msg)", (self, msg))
 
 
     def handle_playNewCity(self):
-        print(("handle_playNewCity(self)", (self,)))
+        print("handle_playNewCity(self)", (self,))
 
 
     def handle_makeSound(self, channel, sound, x, y):
@@ -1239,52 +1228,49 @@ class MicropolisGenericEngine(micropolisengine.Micropolis):
 
 
     def handle_newGame(self):
-       #print(("handle_newGame(self)", (self,)))
-        return
+        print("handle_newGame(self)", (self,))
+
 
     def handle_loseGame(self):
-       #print(("handle_loseGame(self)", (self,)))
-        return
+        print("handle_loseGame(self)", (self,))
+
 
     def handle_reallyStartGame(self):
-        print(("handle_reallyStartGame(self)", (self,)))
+        print("handle_reallyStartGame(self)", (self,))
 
 
     def handle_saveCityAs(self):
-        print(("handle_saveCityAs(self)", (self,)))
+        print("handle_saveCityAs(self)", (self,))
 
 
     def handle_showBudgetAndWait(self):
-#       print(("handle_showBudgetAndWait(self)", (self,)))
+        print("handle_showBudgetAndWait(self)", (self,))
         # @todo Show budget window. Actually pause the engine here. Maybe start a timeout to un-pause it.
-        pass
 
 
     def handle_showPicture(self, id):
         #print "handle_showPicture(self, id)", (self, id)
-        print(("SHOWPICTURE", id))
+        print("SHOWPICTURE", id)
 
 
     def handle_showZoneStatus(self, tileCategory, s0, s1, s2, s3, s4, x, y):
-        print(("handle_showZoneStatus(self, tileCategory, s0, s1, s2, s3, s4, x, y)", (self, tileCategory, s0, s1, s2, s3, s4, x, y)))
+        print("handle_showZoneStatus(self, tileCategory, s0, s1, s2, s3, s4, x, y)", (self, tileCategory, s0, s1, s2, s3, s4, x, y))
 
 
     def handle_startEarthquake(self, magnitude):
-       #print(("handle_startEarthquake(self, magnitude)", (self, magnitude,)))
-        pass
+        print("handle_startEarthquake(self, magnitude)", (self, magnitude,))
 
 
     def handle_startScenario(self, scenario):
-       #print(("handle_startScenario(self, scenario)", (self, scenario)))
-        pass
+        print("handle_startScenario(self, scenario)", (self, scenario))
 
 
     def handle_startLoad(self):
-        print(("handle_startLoad(self)", (self,)))
+        print("handle_startLoad(self)", (self,))
 
 
     def handle_winGame(self):
-        print(("handle_winGame(self)", (self,)))
+        print("handle_winGame(self)", (self,))
 
 
     def handle_update(self, name, *args):

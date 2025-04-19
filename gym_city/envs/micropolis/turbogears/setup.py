@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 from turbogears.finddata import find_package_data
 
 import os
-execfile(os.path.join("micropolis", "release.py"))
+exec(compile(open(os.path.join("micropolis", "release.py"), "rb").read(), os.path.join("micropolis", "release.py"), 'exec'))
 
 packages=find_packages()
 package_data = find_package_data(where='micropolis',

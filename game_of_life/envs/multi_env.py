@@ -56,7 +56,7 @@ class GoLMultiEnv(core.Env):
         self.param_bounds = OrderedDict({
                 'pop': (0, max_pop)
                 })
-        self.param_ranges = [abs(ub-lb) for lb, ub in self.param_bounds.values()]
+        self.param_ranges = [abs(ub-lb) for lb, ub in list(self.param_bounds.values())]
         max_loss = sum(self.param_ranges)
         self.max_loss = torch.zeros(size=(self.num_proc,)).fill_(max_loss)
         self.params = OrderedDict({
@@ -67,7 +67,7 @@ class GoLMultiEnv(core.Env):
                 })
         num_params = len(self.params)
         # so that we can calculate the loss of each sim separately
-        self.trg_param_vals = torch.Tensor([v for v in self.params.values()])
+        self.trg_param_vals = torch.Tensor([v for v in list(self.params.values())])
         self.trg_param_vals = self.trg_param_vals.unsqueeze(0).expand(self.num_proc,
                 num_params)
         self.curr_param_vals = torch.zeros(self.trg_param_vals.shape)
@@ -144,9 +144,9 @@ class GoLMultiEnv(core.Env):
 
 
     def set_params(self, params):
-        print('Updated env targets: {}'.format(params))
+        print(('Updated env targets: {}'.format(params)))
         self.params = params
-        self.trg_param_vals = torch.Tensor([v for v in params.values()])
+        self.trg_param_vals = torch.Tensor([v for v in list(params.values())])
         self.trg_param_vals = self.trg_param_vals.unsqueeze(0).expand(self.num_proc,
                 self.num_params)
         # update our scalar observation
@@ -297,11 +297,11 @@ class GoLMultiEnv(core.Env):
         if event == cv2.EVENT_LBUTTONDOWN:
             a = int(self.actionsToInts[0][x][y])
             self.player_builds += [a]
-            print('q\'d player build at: {}, {}'.format(x, y))
+            print(('q\'d player build at: {}, {}'.format(x, y)))
         elif event == cv2.EVENT_MBUTTONDOWN:
             a = int(self.actionsToInts[0][x][y])
             self.player_builds += [-a]
-            print('q\'d player delete at: {}, {}'.format(x, y))
+            print(('q\'d player delete at: {}, {}'.format(x, y)))
 
 
     def seed(self, seed=None):

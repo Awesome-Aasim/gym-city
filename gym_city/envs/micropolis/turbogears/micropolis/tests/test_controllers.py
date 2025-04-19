@@ -12,7 +12,7 @@ class TestPages(testutil.TGTest):
         "the index method should return a string called now"
         import types
         response = self.app.get("/")
-        assert type(response.raw["now"]) == types.StringType
+        assert type(response.raw["now"]) == bytes
 
     def test_indextitle(self):
         "The indexpage should have the right title"

@@ -9,8 +9,8 @@ if sys.version_info[0] >= 3:
     from .corecontrol import MicropolisControl
 else:
     import gtk
-    from tilemap import TileMap
-    from corecontrol import MicropolisControl
+    from .tilemap import TileMap
+    from .corecontrol import MicropolisControl
 import time
 from time import sleep
 
@@ -186,7 +186,7 @@ class MicropolisEnv(core.Env):
         return (self.state, reward, terminal, {})
 
     def printMap(self):
-        print('{}\npopulation: {}\ntraffic: {}\n{}\n'.format(np.add(self.micro.map.zoneMap[-1], np.full((self.MAP_X, self.MAP_Y), 2)), self.curr_pop, self.micro.total_traffic, self.micro.map.static_builds))
+        print(('{}\npopulation: {}\ntraffic: {}\n{}\n'.format(np.add(self.micro.map.zoneMap[-1], np.full((self.MAP_X, self.MAP_Y), 2)), self.curr_pop, self.micro.total_traffic, self.micro.map.static_builds)))
 
 
 

@@ -83,7 +83,7 @@ class TileMap(object):
                 "WaterWire": ["Water", "Wire"],
                 "LandForest": ["Land", "Forest"]}
         self.zones = list(self.zoneSize.keys()) + list(composite_zones.keys())
-        for c in composite_zones.keys():
+        for c in list(composite_zones.keys()):
             self.zoneSize[c] = self.zoneSize[composite_zones[c][0]]
         self.num_zones = len(self.zones)
         self.num_features = self.num_zones - len(composite_zones)
@@ -116,7 +116,7 @@ class TileMap(object):
                 self.zoneSquares["Rubble"] = self.zoneSquares["Rubble_1"]
             else:
                 zone_int = self.zoneInts[z]
-                if z in composite_zones.keys():
+                if z in list(composite_zones.keys()):
                     feature_ints = [self.zoneInts[z1] for z1 in composite_zones[z]] 
                 else:
                     feature_ints = None
@@ -198,7 +198,7 @@ class TileMap(object):
     def updateTile(self, x, y, static_build=False):
         tile_int = self.micro.getTile(x, y)
         zone = zoneFromInt(tile_int)
-        if zone == "???": print("??? at ", x, y, "tile character: ", tile_int)
+        if zone == "???": print(("??? at ", x, y, "tile character: ", tile_int))
         zone_int = self.zoneInts[zone]
         self._addZoneInt(zone_int, x, y, static_build)
 

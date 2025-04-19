@@ -217,7 +217,7 @@ class Dataset(object):
         return iter(self.data[1])
 
     def iter_xy(self):
-        return zip(self.iter_x(), self.data[1])
+        return list(zip(self.iter_x(), self.data[1]))
 
     def __len__(self):
         return self.size
@@ -377,7 +377,7 @@ class BufferedDataset(Dataset):
         return iter(self.data[1] + self.buffer.data[1])
 
     def iter_xy(self):
-        return zip(self.iter_x(), self.data[1] + self.buffer.data[1])
+        return list(zip(self.iter_x(), self.data[1] + self.buffer.data[1]))
 
     def __len__(self):
         return self.size + self.buffer.size
@@ -417,8 +417,8 @@ class BufferedDataset(Dataset):
         if self.buffer.size > 0:
             buffer_dists, buffer_idxes = self.buffer.nn_dims(x, y, dims_x, dims_y, k, radius, eps, p)
             buffer_idxes = [i + self.size for i in buffer_idxes]
-            ziped = zip(dists, idxes)
-            buffer_ziped = zip(buffer_dists, buffer_idxes)
+            ziped = list(zip(dists, idxes))
+            buffer_ziped = list(zip(buffer_dists, buffer_idxes))
             sorted_dists_idxes = sorted(ziped + buffer_ziped, key=lambda di:di[0])
             knns = sorted_dists_idxes[:k]
             return [knn[0] for knn in knns], [knn[1] for knn in knns] 
@@ -442,8 +442,8 @@ class BufferedDataset(Dataset):
                 return dists, idxes
             else:
                 return buffer_dists, buffer_idxes
-            ziped = zip(dists, idxes)
-            buffer_ziped = zip(buffer_dists, buffer_idxes)
+            ziped = list(zip(dists, idxes))
+            buffer_ziped = list(zip(buffer_dists, buffer_idxes))
             sorted_dists_idxes = sorted(ziped + buffer_ziped, key=lambda di:di[0])
             knns = sorted_dists_idxes[:k]
             return [knn[0] for knn in knns], [knn[1] for knn in knns] 

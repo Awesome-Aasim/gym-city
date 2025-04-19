@@ -67,7 +67,7 @@ import logging
 import sys
 import time
 import subprocess
-import thread
+import _thread
 import fcntl
 
 from sugar.activity import activity
@@ -144,10 +144,10 @@ class MicropolisActivity(activity.Activity):
         logging.debug("STARTING THREAD... " + str(self._stdout_thread_function))
         t = None
         try:
-            t = thread.start_new(
+            t = _thread.start_new(
                 self._stdout_thread_function,
                 ())
-        except Exception, e:
+        except Exception as e:
             logging.debug("EXCEPTION " + str(e))
         self._stdout_thread = t
         logging.debug("STARTED THREAD. " + str(t))
@@ -181,7 +181,7 @@ class MicropolisActivity(activity.Activity):
             line = 'XXX'
             try:
                 line = f.readline()
-            except Exception, e:
+            except Exception as e:
                 logging.debug("READLINE EXCEPTION " + str(e))
                 break
             logging.debug("LINE: " + repr(line))
@@ -203,12 +203,12 @@ class MicropolisActivity(activity.Activity):
             self._bundle_path,
             'res/sounds',
             name.lower() + '.wav')
-        print "PLAY_SOUND " + fileName
+        print("PLAY_SOUND " + fileName)
         try:
             sound = pygame.mixer.Sound(fileName)
             sound.play()
-        except Exception, e:
-            print "Can't play sound: " + fileName + " " + str(e)
+        except Exception as e:
+            print("Can't play sound: " + fileName + " " + str(e))
             pass
 
 

@@ -18,7 +18,7 @@ def step(state, get_neighbors):
     # Alive cell with less than two neighbors should die
     rule1 = (neighbors < 2).type(Tensor)
     
-    print(rule1, state)
+    print((rule1, state))
     rule1 = rule1.cuda()
 
     mask1 = (rule1 * state[0, ...]).type(ByteTensor)

@@ -12,8 +12,8 @@ if sys.version_info[0] >= 3:
     from .paintcontrol import MicropolisPaintControl
 else:
     import gtk
-    from tilemap import TileMap
-    from paintcontrol import MicropolisPaintControl
+    from .tilemap import TileMap
+    from .paintcontrol import MicropolisPaintControl
 import time
 from .env import MicropolisEnv
 

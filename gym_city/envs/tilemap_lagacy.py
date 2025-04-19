@@ -38,7 +38,7 @@ class TileMap(object):
                 'Forest': 1
                }
         # hacky - this way we can exclude them from the one-hot zone map easily
-        self.zones = [z for z in self.zoneSize.keys()] + ['RoadWire', 'RailWire']
+        self.zones = [z for z in list(self.zoneSize.keys())] + ['RoadWire', 'RailWire']
         composite_zones = {"RoadWire": ["Road", "Wire"], "RailWire": ["Rail", "Wire"]}
         self.zoneSize['RoadWire'] = 1
         self.zoneSize['RailWire'] = 1
@@ -72,7 +72,7 @@ class TileMap(object):
                     self.zoneSquares[z0] = makeZoneSquare(s, self.zoneInts[z])
             else:
                 zone_int = self.zoneInts[z]
-                if z in composite_zones.keys():
+                if z in list(composite_zones.keys()):
                     feature_ints = [self.zoneInts[z1] for z1 in composite_zones[z]] 
                 else:
                     feature_ints = None

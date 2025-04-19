@@ -4,7 +4,7 @@ if int(sys.version[0]) >= 3:
 else:
     import gtk
 
-import corecontrol
+from . import corecontrol
 m = corecontrol.MicropolisControl()
 m.layGrid(4, 4)
 for i in range(1000):

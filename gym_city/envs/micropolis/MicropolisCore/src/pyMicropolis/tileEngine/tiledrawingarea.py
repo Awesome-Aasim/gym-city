@@ -68,9 +68,9 @@
 ########################################################################
 # Import stuff
 
-from gi.repository import Gtk as gtk
-from gi.repository import GObject as gobject
-from gi.repository import Gdk as gdk
+
+import gtk
+import gobject
 import cairo
 import math
 import array
@@ -127,12 +127,10 @@ class TileDrawingArea(gtk.DrawingArea):
         gtk.DrawingArea.__init__(self, **args)
 
         # Compute path to tiles.png file relative to this module
-        print(tilesFileName)
         if tilesFileName is None:
-            tilesFileName = os.path.join(
-                                os.path.dirname(__file__),
-                                '../../images/tileEngine/tiles.png')
-            tilesFileName = os.path.abspath(tilesFileName)
+            path = os.path.join(os.path.basename(__file__),
+                                '../images/tileEngine/tiles.png')
+            tilesFileName = os.path.abspath(path)
 
         self.tengine = tengine
         self.tilesFileName = tilesFileName
@@ -198,31 +196,27 @@ class TileDrawingArea(gtk.DrawingArea):
 
         self.tilesLoaded = False
 
-        print('creating engine')
         self.createEngine()
-        print('done creating engine')
 
-        self.set_can_focus(True)
-
-        from gi.repository import Gdk as gdk
+        self.set_flags(
+            gtk.CAN_FOCUS)
 
         self.set_events(
-            gdk.EventMask.EXPOSURE_MASK |
-            gdk.EventMask.ENTER_NOTIFY_MASK |
-            gdk.EventMask.LEAVE_NOTIFY_MASK |
-            gdk.EventMask.POINTER_MOTION_MASK |
-            gdk.EventMask.POINTER_MOTION_HINT_MASK |
-            gdk.EventMask.BUTTON_MOTION_MASK |
-            gdk.EventMask.BUTTON_PRESS_MASK |
-            gdk.EventMask.BUTTON_RELEASE_MASK |
-            gdk.EventMask.FOCUS_CHANGE_MASK |
-            gdk.EventMask.KEY_PRESS_MASK |
-            gdk.EventMask.KEY_RELEASE_MASK |
-            gdk.EventMask.PROXIMITY_IN_MASK |
-            gdk.EventMask.PROXIMITY_OUT_MASK |
-            gdk.EventMask.SCROLL_MASK)
+            gtk.gdk.EXPOSURE_MASK |
+            gtk.gdk.ENTER_NOTIFY_MASK |
+            gtk.gdk.LEAVE_NOTIFY_MASK |
+            gtk.gdk.POINTER_MOTION_MASK |
+            gtk.gdk.POINTER_MOTION_HINT_MASK |
+            gtk.gdk.BUTTON_MOTION_MASK |
+            gtk.gdk.BUTTON_PRESS_MASK |
+            gtk.gdk.BUTTON_RELEASE_MASK |
+            gtk.gdk.FOCUS_CHANGE_MASK |
+            gtk.gdk.KEY_PRESS_MASK |
+            gtk.gdk.KEY_RELEASE_MASK |
+            gtk.gdk.PROXIMITY_IN_MASK |
+            gtk.gdk.PROXIMITY_OUT_MASK)
 
-        self.connect('draw', self.handleExpose)
+        self.connect('expose_event', self.handleExpose)
         self.connect('enter_notify_event', self.handleEnterNotify)
         self.connect('enter_notify_event', self.handleLeaveNotify)
         self.connect('focus_in_event', self.handleFocusIn)
@@ -240,7 +234,7 @@ class TileDrawingArea(gtk.DrawingArea):
 
         self.destroyEngine()
 
-        gtk.DrawingArea.destroy(self)
+        gtk.DrawingArea.__del__(self)
 
 
     def tickTimer(
@@ -333,12 +327,12 @@ class TileDrawingArea(gtk.DrawingArea):
         if self.scale == scale:
             return
 
-        if not self.get_window():
+        if not self.window:
             return
 
         self.scale = scale
 
-        ctxWindow = self.get_window().cairo_create()
+        ctxWindow = self.window.cairo_create()
         self.loadGraphics(ctxWindow, True)
 
         self.updateView()
@@ -355,7 +349,6 @@ class TileDrawingArea(gtk.DrawingArea):
 
 
     def loadSurfaceFromPNG(self, fileName):
-        print('attempting to load surface from png at: {}'.format(fileName))
         surface = cairo.ImageSurface.create_from_png(fileName)
         return (
             surface,
@@ -480,18 +473,11 @@ class TileDrawingArea(gtk.DrawingArea):
         self):
 
         if not self.tengine:
-            print("creating new tile engine")
 
             tengine = tileengine.TileEngine()
-            print("built swig object")
             self.tengine = tengine
 
-            print("swig tile engine: {}".format(tengine))
-            print("config function: {}".format(self.configTileEngine))
             self.configTileEngine(tengine)
-            print("configured tile engine")
-        else:
-            print("existing tile engine: {}".format(self.tengine))
 
 
     def getPie(self):
@@ -510,9 +496,10 @@ class TileDrawingArea(gtk.DrawingArea):
         pass
 
 
-    def configTileEngine(self, tengine):
+    def configTileEngine(
+        self,
+        tengine):
 
-        print('ASSS')
         tengine.setBuffer(None)
         tengine.width = 1
         tengine.height = 1
@@ -549,7 +536,7 @@ class TileDrawingArea(gtk.DrawingArea):
 
         self.beforeDraw()
 
-        ctxWindow = self.get_window().cairo_create()
+        ctxWindow = self.window.cairo_create()
 
         winRect = self.get_allocation()
         winWidth = winRect.width
@@ -668,23 +655,22 @@ class TileDrawingArea(gtk.DrawingArea):
 
             self.prepareToRenderTiles(ctx)
 
-#           print("renderTilesLazy BEGIN")
+            #print "renderTilesLazy BEGIN", self.generateTile
             self.tengine.renderTilesLazy(
-                    ctx,
-                    self.tileFunction,
-                    self.tileMap,
-                    self.tileSize,
-                    self.renderCol,
-                    self.renderRow,
-                    renderCols,
-                    renderRows,
-                    1.0,
-                    self.generateTile,
-                    self.tileCache,
-                    self.tileCacheSurfaces,
-                    self.tileState
-             )
-#       print("renderTilesLazy END")
+                ctx,
+                self.tileFunction,
+                self.tileMap,
+                self.tileSize,
+                self.renderCol,
+                self.renderRow,
+                renderCols,
+                renderRows,
+                1.0,
+                self.generateTile,
+                self.tileCache,
+                self.tileCacheSurfaces,
+                self.tileState)
+            #print "renderTilesLazy END"
 
         ctxWindowBuffer.save()
 
@@ -779,7 +765,7 @@ class TileDrawingArea(gtk.DrawingArea):
         self,
         tile):
 
-        #print("======== GENERATETILE", tile)
+        #print "======== GENERATETILE", tile
 
         # Get the various tile measurements.
         sourceTileSize = self.sourceTileSize
@@ -799,13 +785,13 @@ class TileDrawingArea(gtk.DrawingArea):
         # surfaces to not get too big.
 
         tileColsPerSurface = max(1, int(math.floor(maxSurfaceSize / tileSize)))
-        #print("tileColsPerSurface", tileColsPerSurface)
+        #print "tileColsPerSurface", tileColsPerSurface
 
         tilesPerSurface = tileColsPerSurface * tileColsPerSurface
         #print "tilesPerSurface", tilesPerSurface
 
         surfaceSize = tileColsPerSurface * tileSize
-        #print("surfaceSize", surfaceSize)
+        #print "surfaceSize", surfaceSize
 
         cacheTile = self.tileCacheCount
         self.tileCacheCount += 1
@@ -816,13 +802,13 @@ class TileDrawingArea(gtk.DrawingArea):
         ctxWindow = None
         nativeTarget = None
         while len(tileCacheSurfaces) <= surfaceIndex:
-            #print("MAKING TILESSURFACE", len(tileCacheSurfaces), tilesPerSurface, surfaceSize)
+            #print "MAKING TILESSURFACE", len(tileCacheSurfaces), tilesPerSurface, surfaceSize
             if nativeTarget == None:
-                ctxWindow = self.get_window().cairo_create()
+                ctxWindow = self.window.cairo_create()
                 nativeTarget = ctxWindow.get_target()
             tilesSurface = nativeTarget.create_similar(cairo.CONTENT_COLOR, surfaceSize, surfaceSize)
             tileCacheSurfaces.append(tilesSurface)
-            #print("DONE")
+            #print "DONE"
 
         tilesSurface = tileCacheSurfaces[surfaceIndex]
         tileOnSurface = cacheTile % tilesPerSurface
@@ -870,13 +856,13 @@ class TileDrawingArea(gtk.DrawingArea):
             x,
             y)
 
-        #print("X", x, "Y", y, "FUDGE", fudge, "SCALE", scale, "TILESIZE", tileSize)
+        #print "X", x, "Y", y, "FUDGE", fudge, "SCALE", scale, "TILESIZE", tileSize
 
         # Make it a pixel bigger to eliminate the fuzzy black edges.
         #zoomScale = float(tileSize) / float(sourceTileSize)
         zoomScale = float(tileSize) / float(sourceTileSize - 1.0)
 
-        #print("ZOOMSCALE", zoomScale, "TILESIZE", tileSize, "SOURCETILESIZE", sourceTileSize)
+        #print "ZOOMSCALE", zoomScale, "TILESIZE", tileSize, "SOURCETILESIZE", sourceTileSize
 
         tilesCtx.scale(
             zoomScale,
@@ -924,7 +910,7 @@ class TileDrawingArea(gtk.DrawingArea):
         #print "GENERATETILE", tile, "surfaceIndex", surfaceIndex, "tileX", tileX, "tileY", tileY
 
         result = (surfaceIndex, tileX, tileY)
-        #print("GENERATETILE", tile, "RESULT", result)
+        #print "GENERATETILE", tile, "RESULT", result
         return result
 
 
@@ -960,8 +946,7 @@ class TileDrawingArea(gtk.DrawingArea):
         event):
         if (hasattr(event, 'is_hint') and
             event.is_hint):
-
-            _, x, y, state = event.get_window().get_pointer()
+            x, y, state = event.window.get_pointer()
         else:
             x = event.x
             y = event.y
@@ -979,7 +964,7 @@ class TileDrawingArea(gtk.DrawingArea):
         event):
         if (hasattr(event, 'is_hint') and
             event.is_hint):
-            _, x, y, state = event.get_window().get_pointer()
+            x, y, state = event.window.get_pointer()
         else:
             x = event.x
             y = event.y
@@ -993,7 +978,7 @@ class TileDrawingArea(gtk.DrawingArea):
 
     def updateView(self):
         self.queue_draw()
-        self.get_parent().queue_draw() # @bug Why is this necessary? Doesn't draw without it. Are we really a window?
+        self.parent.queue_draw() # @bug Why is this necessary? Doesn't draw without it. Are we really a window?
 
 
     def panTo(self, x, y):
@@ -1037,12 +1022,12 @@ class TileDrawingArea(gtk.DrawingArea):
         tileY = ((winHeight / 2) - self.panY) / tileSize
 
         #print "getCenterTile", "tile", tileX, tileY, "tileSize", self.tileSize, "scale", self.scale
-
+     
         return tileX, tileY
 
 
     def selectToolByName(self, toolName):
-        print(("selectToolByName", toolName))
+        print("selectToolByName", toolName)
 
         tool = tiletool.TileTool.getToolByName(toolName)
 
@@ -1176,10 +1161,10 @@ class TileDrawingArea(gtk.DrawingArea):
         event):
 
         if not event:
-            _, x, y, state = self.get_window().get_pointer()
+            x, y, state = self.window.get_pointer()
         elif (hasattr(event, 'is_hint') and
               event.is_hint):
-            _, x, y, state = event.get_window().get_pointer()
+            x, y, state = event.window.get_pointer()
         else:
             x = event.x
             y = event.y
@@ -1226,7 +1211,7 @@ class TileDrawingArea(gtk.DrawingArea):
         widget,
         event):
 
-        print(("handleButtonPress TileDrawingArea", self))
+        print("handleButtonPress TileDrawingArea", self)
 
         #print "EVENT", event
         #print dir(event)
@@ -1250,7 +1235,7 @@ class TileDrawingArea(gtk.DrawingArea):
 
             if pie:
 
-                _, win_x, win_y, state = event.get_window().get_pointer()
+                win_x, win_y, state = event.window.get_pointer()
 
                 #print "POP UP PIE", pie, win_x, win_y, state
                 #print "WIN", win_x, win_y
@@ -1309,9 +1294,9 @@ class TileDrawingArea(gtk.DrawingArea):
 
         direction = event.direction
 
-        if direction == gdk.ScrollDirection.UP:
+        if direction == gtk.gdk.SCROLL_UP:
             self.changeScale(self.scale * self.scrollWheelZoomScale)
-        elif direction == gdk.ScrollDirection.DOWN:
+        elif direction == gtk.gdk.SCROLL_DOWN:
             self.changeScale(self.scale / self.scrollWheelZoomScale)
 
 

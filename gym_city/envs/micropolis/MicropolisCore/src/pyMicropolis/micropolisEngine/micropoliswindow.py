@@ -67,13 +67,15 @@
 
 ########################################################################
 # Import stuff
+
+
 import sys
 import os
 import time
-from gi.repository import Gtk as gtk
-from gi.repository import GObject as gobject
+import gtk
+import gobject
 import cairo
-from gi.repository import Pango as pango
+import pango
 import math
 import _thread
 import random
@@ -84,7 +86,7 @@ import array
 # Import our modules
 
 
-from . import micropolisengine
+import micropolisengine
 from . import micropolisnotebook
 from . import micropolisstartpanel
 from . import micropolisgaugeview
@@ -97,8 +99,6 @@ from . import micropolisbudgetpanel
 from . import micropolismappanel
 from . import micropolisdisasterspanel
 from . import micropoliscontrolpanel
-
-from . import micropolisagentpanel
 
 
 ########################################################################
@@ -157,7 +157,7 @@ class MicropolisPanedWindow(gtk.Window):
 
         modeNotebook = gtk.Notebook()
         self.modeNotebook = modeNotebook
-        modeNotebook.set_group_name('0')
+        modeNotebook.set_group_id(0)
         modeNotebook.set_show_tabs(False)
 
         startPanel = micropolisstartpanel.MicropolisStartPanel(
@@ -221,11 +221,6 @@ class MicropolisPanedWindow(gtk.Window):
             target=self)
         self.controlPanel = controlPanel
         notebook1.addLabelTab('Control', controlPanel)
-
-        agentPanel = micropolisagentpanel.MicropolisAgentPanel(
-            engine=engine)
-        self.agentPanel = agentPanel
-        notebook1.addLabelTab('Agent', agentPanel)
 
         # Panes
 
@@ -308,7 +303,7 @@ class MicropolisPanedWindow(gtk.Window):
         if False:
             cityFileName = 'cities/haight.cty'
             #cityFileName = 'cities/yokohama.cty'
-            print(("Loading city file:", cityFileName))
+            print("Loading city file:", cityFileName)
             engine.loadFile(cityFileName)
         else:
             self.generateCity()
@@ -323,7 +318,7 @@ class MicropolisPanedWindow(gtk.Window):
 
 
     def startScenario(self, id):
-        print(("STARTSCENARIO", id))
+        print("STARTSCENARIO", id)
         engine = self.engine
         engine.loadMetaScenario(id)
 
@@ -340,7 +335,7 @@ class MicropolisPanedWindow(gtk.Window):
                 gtk.STOCK_OPEN,
                 gtk.RESPONSE_OK,
             ))
-
+       
         filter = gtk.FileFilter()
         filter.set_name("Micropolis Cities")
         filter.add_pattern("*.xml")
@@ -352,16 +347,16 @@ class MicropolisPanedWindow(gtk.Window):
         response = dialog.run()
         if response == gtk.RESPONSE_OK:
             fileName = dialog.get_filename()
-            print(("FILENAME", fileName))
+            print("FILENAME", fileName)
             result = False
             try:
                 self.engine.loadMetaCity(fileName)
                 result = True
             except Exception as e:
-                print(("FAILED TO LOAD META CITY", fileName))
-                print((str(e)))
+                print("FAILED TO LOAD META CITY", fileName)
+                print(str(e))
                 result = False
-            print(("RESULT", result))
+            print("RESULT", result)
         elif response == gtk.RESPONSE_CANCEL:
             print('Closed, no files selected')
         dialog.destroy()
@@ -394,10 +389,10 @@ class MicropolisPanedWindow(gtk.Window):
         print("ABOUT DIALOG")
 
         def handleEmail(dialog, link, data):
-            print(("HANDLE EMAIL", dialog, link, data))
+            print("HANDLE EMAIL", dialog, link, data)
 
         def handleUrl(dialog, link, data):
-            print(("HANDLE EMAIL", dialog, link, data))
+            print("HANDLE EMAIL", dialog, link, data)
 
         engine = self.engine
         dialog = gtk.AboutDialog()
@@ -463,7 +458,7 @@ class MicropolisPanedWindow(gtk.Window):
         winWidth = winRect.width
         winHeight = winRect.height
 
-        print(("WINDOW SIZE", winWidth, winHeight))
+        print("WINDOW SIZE", winWidth, winHeight)
 
         extra = 4
         padding = 14
@@ -505,10 +500,10 @@ class MicropolisPanedWindow(gtk.Window):
 
     def createWindowNotebook(self, otherNotebook, notebook, page, x, y):
 
-        print(("createWindowNotebook", otherNotebook, notebook, page, x, y))
+        print("createWindowNotebook", otherNotebook, notebook, page, x, y)
 
         parent = page.get_parent()
-        print(("parent", parent, parent == self.notebook1, parent == self.notebook2, parent == self.notebook3))
+        print("parent", parent, parent == self.notebook1, parent == self.notebook2, parent == self.notebook3)
 
         for n in (self.notebook1, self.notebook2, self.notebook3):
             print(n)

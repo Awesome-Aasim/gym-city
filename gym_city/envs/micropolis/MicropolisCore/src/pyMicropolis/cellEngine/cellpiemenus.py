@@ -68,7 +68,7 @@
 ########################################################################
 
 
-from gi.repository import Gtk as gtk
+import gtk
 from pyMicropolis.piemenu import piemenu
 
 

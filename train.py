@@ -102,7 +102,7 @@ class Trainer():
             self.win = win
             win_eval = None
             self.win_eval = win_eval
-        print('env name: {}'.format(args.env_name))
+        print(('env name: {}'.format(args.env_name)))
         if 'GameOfLife' in args.env_name:
             num_actions = 1
         envs = make_vec_envs(args.env_name, args.seed, args.num_processes,
@@ -147,7 +147,7 @@ class Trainer():
                 out_w = 1
                 out_h = 1
             num_actions = envs.action_space.shape[-1]
-        print('num actions {}'.format(num_actions))
+        print(('num actions {}'.format(num_actions)))
 
         if args.auto_expand:
             args.n_recs -= 1
@@ -208,17 +208,17 @@ class Trainer():
             agent.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
             if args.auto_expand:
                 if not args.n_recs - saved_args.n_recs == 1:
-                    print('can expand by 1 rec only from saved model, not {}'.format(args.n_recs - saved_args.n_recs))
+                    print(('can expand by 1 rec only from saved model, not {}'.format(args.n_recs - saved_args.n_recs)))
                     raise Exception
                 actor_critic.base.auto_expand()
-                print('expanded net: \n{}'.format(actor_critic.base))
+                print(('expanded net: \n{}'.format(actor_critic.base)))
                 # TODO: Are we losing something crucial here? Probably not ideal.
                 agent = init_agent(actor_critic, args)
 
             past_frames = checkpoint['n_frames']
             ob_rms = checkpoint['ob_rms']
            #past_steps = next(iter(agent.optimizer.state_dict()['state'].values()))['step']
-            print('Resuming from frame {}'.format(past_frames))
+            print(('Resuming from frame {}'.format(past_frames)))
 
            #print(type(next(iter((torch.load(saved_model))))))
            #actor_critic, ob_rms = \
@@ -382,7 +382,7 @@ class Trainer():
         if type(infos) is dict:
             infos = [infos]
         for info in infos:
-            if 'episode' in info.keys():
+            if 'episode' in list(info.keys()):
                 episode_rewards.append(info['episode']['r'])
 
         # If done then clean the history of observations.
@@ -453,7 +453,7 @@ class Trainer():
        #    print(rollouts.rewards)
         if args.log and n_train % args.log_interval == 0 and len(episode_rewards) > 1:
             end = time.time()
-            print("Updates {}, num timesteps {}, FPS {} \n Last {} training episodes: mean/median reward {:.6f}/{:.6f}, min/max reward {:.6f}/{:.6f}\n \
+            print(("Updates {}, num timesteps {}, FPS {} \n Last {} training episodes: mean/median reward {:.6f}/{:.6f}, min/max reward {:.6f}/{:.6f}\n \
 dist entropy {:.6f}, val/act loss {:.6f}/{:.6f},".
                 format(n_train, total_num_steps,
                        int((self.n_frames - self.past_frames) / (end - start)),
@@ -462,11 +462,11 @@ dist entropy {:.6f}, val/act loss {:.6f}/{:.6f},".
                        round(np.median(episode_rewards), 6),
                        round(np.min(episode_rewards), 6),
                        round(np.max(episode_rewards), 6), round(dist_entropy, 6),
-                       round(value_loss, 6), round(action_loss, 6)))
+                       round(value_loss, 6), round(action_loss, 6))))
             if args.curiosity:
-                print("fwd/inv icm loss {:.1f}/{:.1f}\n".
+                print(("fwd/inv icm loss {:.1f}/{:.1f}\n".
                 format(
-                       fwd_loss, inv_loss))
+                       fwd_loss, inv_loss)))
 
         if (args.eval_interval is not None and len(episode_rewards) > 1
                 and n_train % args.eval_interval == 0):
@@ -532,7 +532,7 @@ dist entropy {:.6f}, val/act loss {:.6f}/{:.6f},".
            #torch.save(save_agent, os.path.join(save_path, args.env_name + '_agent.pt'))
            #torch.save(actor_critic.state_dict(), os.path.join(save_path, args.env_name + "_weights.pt"))
 
-            print('model saved at {}'.format(save_path))
+            print(('model saved at {}'.format(save_path)))
 
         if args.vis and n_train % args.vis_interval == 0:
             if plotter is None:

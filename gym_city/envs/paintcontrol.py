@@ -17,7 +17,7 @@ if sys.version_info[0] >= 3:
 else:
     print('Python 2 not supported')
     sys.path.append(MICROPOLISCORE_DIR)
-    from tilemap import TileMap
+    from .tilemap import TileMap
 
 CURR_DIR = os.getcwd()
 # we need to do this so the micropolisgenericengine can access images/micropolisEngine/dataColorMap.png

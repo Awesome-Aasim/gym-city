@@ -52,7 +52,7 @@ def euclidean_distance(nx, ny, normalize=False):
 def compute_novelty_vs_archive(archive, niche, k):
     distances = []
     normalize = False
-    for point in archive.values():
+    for point in list(archive.values()):
         distances.append(euclidean_distance(point, niche, normalize=normalize))
 
     # Pick k nearest neighbors

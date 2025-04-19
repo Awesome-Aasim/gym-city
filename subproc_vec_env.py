@@ -52,7 +52,7 @@ def worker(remote, parent_remote, env_fn_wrapper):
                 ret_val = cmd_fn(*data)
             remote.send(ret_val)
         else:
-            print('invalid command, data: {}, {}'.format(cmd, data))
+            print(('invalid command, data: {}, {}'.format(cmd, data)))
             raise NotImplementedError
 
 
@@ -65,7 +65,7 @@ class SubprocVecEnv(VecEnv):
         self.waiting = False
         self.closed = False
         nenvs = len(env_fns)
-        self.remotes, self.work_remotes = zip(*[Pipe() for _ in range(nenvs)])
+        self.remotes, self.work_remotes = list(zip(*[Pipe() for _ in range(nenvs)]))
         self.ps = [Process(target=worker, args=(work_remote, remote, CloudpickleWrapper(env_fn)))
             for (work_remote, remote, env_fn) in zip(self.work_remotes, self.remotes, env_fns)]
 
@@ -130,7 +130,7 @@ class SubprocVecEnv(VecEnv):
     def step_wait(self):
         results = [remote.recv() for remote in self.remotes]
         self.waiting = False
-        obs, rews, dones, infos = zip(*results)
+        obs, rews, dones, infos = list(zip(*results))
 
         return np.stack(obs), np.stack(rews), np.stack(dones), infos
 

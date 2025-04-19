@@ -48,11 +48,11 @@ class CityNiche(Niche):
 
     def add_env(self, env):
         env_name = env.name
-        assert env_name not in self.env_configs.keys()
+        assert env_name not in list(self.env_configs.keys())
         self.env_configs[env_name] = env
 
     def delete_env(self, env_name):
-        assert env_name in self.env_configs.keys()
+        assert env_name in list(self.env_configs.keys())
         self.env_configs.pop(env_name)
 
     def initial_theta(self):
@@ -74,7 +74,7 @@ class CityNiche(Niche):
             seed = random_state.randint(1000000)
         else:
             seed = self.seed
-        for env_config in self.env_configs.values():
+        for env_config in list(self.env_configs.values()):
             returns, lengths = simulate(
                 self.model, seed=seed, train_mode=not eval, num_episode=1, env_config_this_sim=env_config)
             total_returns += returns[0]

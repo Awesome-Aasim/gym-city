@@ -8,7 +8,7 @@ if sys.version_info[0] >= 3:
 else:
     MICROPOLISCORE_DIR = GIT_DIR + '/micropolis-4bots/MicropolisCore/src'
     sys.path.append(MICROPOLISCORE_DIR)
-    from tilemap import TileMap
+    from .tilemap import TileMap
 CURR_DIR = os.getcwd()
 # we need to do this so the micropolisgenericengine can access images/micropolisEngine/dataColorMap.png
 os.chdir(MICROPOLISCORE_DIR)   

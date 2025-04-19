@@ -49,7 +49,7 @@ class Extinguisher(gym.Wrapper):
             curr_dels = self.localWipe()
         if extinction_type == 'random':
             curr_dels = self.ranDemolish()
-        print('{} deletions'.format(curr_dels))
+        print(('{} deletions'.format(curr_dels)))
         return curr_dels
 
     def localWipe(self):
@@ -220,12 +220,12 @@ class ImRender(gym.Wrapper):
 
     def reset_episodes(self, im_log_dir):
         self.n_episode = 0
-        print('reset epis, imrender log dir: {}'.format(self.im_log_dir))
+        print(('reset epis, imrender log dir: {}'.format(self.im_log_dir)))
         self.im_log_dir = im_log_dir
        #self.im_log_dir = self.im_log_dir.split('/')[:-1]
        #self.im_log_dir = '/'.join(self.im_log_dir)
        #self.im_log_dir = os.path.join(self.im_log_dir, str(self.env.extinction_type))
-        print('reset epis, renamed imrender log dir: {}'.format(self.im_log_dir))
+        print(('reset epis, renamed imrender log dir: {}'.format(self.im_log_dir)))
         try:
             os.mkdir(self.im_log_dir)
         except FileExistsError:

@@ -102,13 +102,13 @@ class RolloutStorage(object):
         if use_gae:
             self.value_preds[-1] = next_value
             gae = 0
-            for step in reversed(range(self.rewards.size(0))):
+            for step in reversed(list(range(self.rewards.size(0)))):
                 delta = self.rewards[step] + gamma * self.value_preds[step + 1] * self.masks[step + 1] - self.value_preds[step]
                 gae = delta + gamma * tau * self.masks[step + 1] * gae
                 self.returns[step] = gae + self.value_preds[step]
         else:
             self.returns[-1] = next_value
-            for step in reversed(range(self.rewards.size(0))):
+            for step in reversed(list(range(self.rewards.size(0)))):
                 self.returns[step] = self.returns[step + 1] * \
                     gamma * self.masks[step + 1] + self.rewards[step]
 
@@ -122,7 +122,7 @@ class RolloutStorage(object):
             "to be greater than or equal to the number of PPO mini batches ({})."
             "".format(num_processes, num_steps, num_processes * num_steps, num_mini_batch))
         mini_batch_size = batch_size // num_mini_batch
-        sampler = BatchSampler(SubsetRandomSampler(range(batch_size)), mini_batch_size, drop_last=False)
+        sampler = BatchSampler(SubsetRandomSampler(list(range(batch_size))), mini_batch_size, drop_last=False)
         for indices in sampler:
             obs_batch = self.obs[:-1].view(-1, *self.obs.size()[2:])[indices]
             recurrent_hidden_states_batch = self.recurrent_hidden_states[:-1].view(-1,

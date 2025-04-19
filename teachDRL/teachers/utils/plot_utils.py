@@ -85,16 +85,16 @@ def region_plot_gif(all_boxes, interests, iterations, goals, gifname='riac', rew
     gifdir = 'graphics/' + gifdir
     ft_off = 15
     plt.ioff()
-    print("Making an exploration GIF: " + gifname)
+    print(("Making an exploration GIF: " + gifname))
     # Create target Directory if don't exist
     tmpdir = 'tmp/'
     tmppath = gifdir + 'tmp/'
     if not os.path.exists(gifdir):
         os.mkdir(gifdir)
-        print("Directory ", gifdir, " Created ")
+        print(("Directory ", gifdir, " Created "))
     if not os.path.exists(tmppath):
         os.mkdir(tmppath)
-        print("Directory ", tmppath, " Created ")
+        print(("Directory ", tmppath, " Created "))
     filenames = []
     images = []
     steps = []
@@ -198,11 +198,11 @@ def gmm_plot_gif(bk, gifname='test', gifdir='graphics/', ax=None,
     tmppath = gifdir + 'tmp/'
     if not os.path.exists(gifdir):
         os.mkdir(gifdir)
-        print("Directory ", gifdir, " Created ")
+        print(("Directory ", gifdir, " Created "))
     if not os.path.exists(tmppath):
         os.mkdir(tmppath)
-        print("Directory ", tmppath, " Created ")
-    print("Making " + tmppath + gifname + ".gif")
+        print(("Directory ", tmppath, " Created "))
+    print(("Making " + tmppath + gifname + ".gif"))
     images = []
     old_ep = 0
     gen_size = int(len(bk['tasks_lps']) / len(bk['episodes']))
@@ -235,11 +235,11 @@ def random_plot_gif(bk, step=250, gifname='test', gifdir='graphics/', ax=None,
     tmppath = gifdir + 'tmp/'
     if not os.path.exists(gifdir):
         os.mkdir(gifdir)
-        print("Directory ", gifdir, " Created ")
+        print(("Directory ", gifdir, " Created "))
     if not os.path.exists(tmppath):
         os.mkdir(tmppath)
-        print("Directory ", tmppath, " Created ")
-    print("Making " + tmppath + gifname + ".gif")
+        print(("Directory ", tmppath, " Created "))
+    print(("Making " + tmppath + gifname + ".gif"))
     images = []
     tasks = np.array(bk['tasks'])
     for i,(c_grids, c_xs, c_ys) in enumerate(zip(bk['comp_grids'], bk['comp_xs'], bk['comp_ys'])):

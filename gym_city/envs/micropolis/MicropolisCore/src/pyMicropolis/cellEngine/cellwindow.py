@@ -71,7 +71,7 @@
 
 import sys
 import os
-from gi.repository import Gtk as gtk
+import gtk
 import _thread
 import gobject
 
@@ -135,10 +135,10 @@ class CellWindow(gtk.Window):
 if __name__ == '__main__':
 
     win = CellWindow()
-    print(("WIN", win))
+    print("WIN", win)
     win.show_all()
     eng = win.da.engine
-    print(("ENG", eng))
+    print("ENG", eng)
 
     #thread.start_new(gtk.main, ())
     gtk.main()

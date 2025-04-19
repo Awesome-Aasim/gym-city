@@ -24,8 +24,8 @@ class OracleTeacher():
                 self.window_pos[i] = self.maxs[i] - self.window_range[i]
 
         self.train_rewards = []
-        print("window range:{} \n position:{}\n step:{}\n"
-              .format(self.window_range, self.window_pos, self.window_step_vector))
+        print(("window range:{} \n position:{}\n step:{}\n"
+              .format(self.window_range, self.window_pos, self.window_step_vector)))
 
     def update(self, task, reward):
         self.train_rewards.append(reward)
@@ -38,7 +38,7 @@ class OracleTeacher():
                         self.window_pos[i] = min(self.window_pos[i] + step, self.maxs[i] - self.window_range[i])
                     elif step <= 0: # check if not stepping below min
                         self.window_pos[i] = max(self.window_pos[i] + step, self.mins[i])
-                print('mut stump: mean_ret:{} window_pos:({})'.format(mean_reward, self.window_pos))
+                print(('mut stump: mean_ret:{} window_pos:({})'.format(mean_reward, self.window_pos)))
 
     def sample_task(self):
         task = np.random.uniform(self.window_pos, self.window_pos+self.window_range).astype(np.float32)

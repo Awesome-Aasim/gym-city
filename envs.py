@@ -34,7 +34,7 @@ class MicropolisMonitor(bench.Monitor):
             old_log = '{}_old'.format(logfile)
             os.rename(logfile, old_log)
         else:
-            print('no old logfile {}'.format(logfile))
+            print(('no old logfile {}'.format(logfile)))
            #raise Exception
         info_keywords = (*info_keywords, 'e', 'p')
         super(MicropolisMonitor, self).__init__(
@@ -75,7 +75,7 @@ class MicropolisMonitor(bench.Monitor):
             epinfo = {"r": round(eprew, 6), "l": eplen, "t": round(time.time() - self.tstart, 6),
                     "e": round(self.dist_entropy, 6)}
 
-            if "p" in epinfo.keys():
+            if "p" in list(epinfo.keys()):
                 epinfo["p"] = round(self.curr_param_vals[0].item(), 6)
 
             for k in self.info_keywords:
@@ -232,7 +232,7 @@ def make_env(env_id, seed, rank, log_dir, add_timestep, allow_early_resets, map_
             env = MultiMonitor(env, os.path.join(log_dir, str(rank)),
                             allow_early_resets=True)
         else:
-            print(log_dir, rank)
+            print((log_dir, rank))
 
             if args.vis:
                 env = MicropolisMonitor(env, os.path.join(log_dir, str(rank)),
@@ -300,7 +300,7 @@ def make_vec_envs(env_name, seed, num_processes, gamma, log_dir, add_timestep,
     envs = VecPyTorch(envs, device)
 
     if num_frame_stack is not None:
-        print('stacking {} frames'.format(num_frame_stack))
+        print(('stacking {} frames'.format(num_frame_stack)))
         envs = VecPyTorchFrameStack(envs, num_frame_stack, device)
     elif len(envs.observation_space.shape) == 3:
         envs = VecPyTorchFrameStack(envs, 1, device)

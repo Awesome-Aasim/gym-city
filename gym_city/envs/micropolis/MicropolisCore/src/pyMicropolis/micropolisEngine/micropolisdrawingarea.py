@@ -68,13 +68,14 @@
 ########################################################################
 # Import stuff
 
+
 import sys
 import os
 import time
-from gi.repository import Gtk as gtk
-from gi.repository import GObject as gobject
+import gtk
+import gobject
 import cairo
-from gi.repository import Pango as pango
+import pango
 import math
 import _thread
 import random
@@ -85,7 +86,7 @@ import array
 # Import our modules
 
 
-from . import micropolisengine
+import micropolisengine
 from . import micropolispiemenus
 from pyMicropolis.tileEngine import tileengine, tiledrawingarea
 from . import micropolistool
@@ -230,16 +231,14 @@ class MicropolisDrawingArea(tiledrawingarea.TileDrawingArea):
 
     def configTileEngine(self, tengine):
 
-        print('configuring NoticeArea')
         engine = self.engine
         buffer = engine.getMapBuffer()
         #print "Map buffer", buffer
-        print('tengine setBuffer fn: {}'.format(tengine.setBuffer))
         tengine.setBuffer(buffer)
         tengine.width = micropolisengine.WORLD_W
         tengine.height = micropolisengine.WORLD_H
 
-        from .micropolisengine import ZONEBIT, PWRBIT, ALLBITS, LIGHTNINGBOLT
+        from micropolisengine import ZONEBIT, PWRBIT, ALLBITS, LIGHTNINGBOLT
 
         def tileFunction(col, row, tile):
             if (tile & ZONEBIT) and not (tile & PWRBIT) and random.random() < 0.5:
@@ -340,7 +339,7 @@ class MicropolisDrawingArea(tiledrawingarea.TileDrawingArea):
             if not sprite:
                 break
             self.drawSprite(ctx, sprite)
-            sprite = sprite.next
+            sprite = sprite.__next__
 
 
     def drawSprite(self, ctx, sprite):
@@ -689,10 +688,10 @@ class NavigationMicropolisDrawingArea(MicropolisDrawingArea):
         event):
 
         if not event:
-            _, x, y, state = self.window.get_pointer()
+            x, y, state = self.window.get_pointer()
         elif (hasattr(event, 'is_hint') and
               event.is_hint):
-            _, x, y, state = event.window.get_pointer()
+            x, y, state = event.window.get_pointer()
         else:
             x = event.x
             y = event.y

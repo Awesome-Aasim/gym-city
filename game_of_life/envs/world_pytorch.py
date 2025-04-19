@@ -145,7 +145,7 @@ def main():
         world.repopulate_cells()
         for i in range(100):
             world._tick()
-            print(world.state)
+            print((world.state))
 
 if __name__ == '__main__':
     main()

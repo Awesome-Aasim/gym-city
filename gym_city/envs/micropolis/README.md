@@ -1,17 +1,3 @@
-# micropolis-4bots #
-
-This fork makes a few small modifications to MicropolisCore, making the engine available to python for stepping through the simulation with or without drawing the gtk window, and removing the handleDidTool() printout which would otherwise clutter the terminal during training. It is intended for use with the [micropolis gym environment](https://github.com/smearle/gym-micropolis). Note that only the MicropolisCore module oought to be installed to these ends, the rest of the repo, including old micropolis-activity, is included only for posterity, entirely unchanged.
-
-## TODO: ##
-
-* Might it be faster to access the simulation's map/tile-array directly for agent observation, rather than leaving agents to maintain an internal representation given the success/fail of their own actions? If not, then we should:
- - have toolDown() method cause bot to update its internal representations, when toolDown() has been caused by something other than the bot itself
-* Make available any other potentially interesting simulation variables for bots
-* Make pre-trained city-building bots available in-game, as player assistants/advisors
-
-Huge thank you to Don Hopkins, and to all the ardent souls who made this brilliant code available for the manglin'.
-Find the original repo's readthrough below.
-
 # Open Source Micropolis, based on the original SimCity Classic from Maxis, by Will Wright. #
 
 This is the source code for Micropolis (based on [SimCity](http://en.wikipedia.org/wiki/SimCity_(1989_video_game))), released under the GPL. Micropolis is based on the original SimCity from Electronic Arts / Maxis, and designed and written by Will Wright.
@@ -30,6 +16,13 @@ Older development plan for the TCL/Tk version of Micropolis and the C++/Python v
 
 ## [Assets](../wiki/Assets.md) ##
 List of art and text assets, and work that needs to be done for Micropolis.
+
+## [Micropolis Public Name License](../wiki/MicropolisPublicNameLicense.md) ##
+The name/term "MICROPOLIS" is a registered trademark owned by and
+exclusively licensed to Micropolis GmbH (Micropolis Corporation, the
+"licensor"). It is here (upstream) licensed to the authors/publishers of
+the "Micropolis" city simulation game and its source code (the project or
+"licensee(s)").
 
 ## Documentation ##
 

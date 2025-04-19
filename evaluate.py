@@ -93,7 +93,7 @@ class Evaluator(object):
         else:
             n_cols = 0
         self.plotter = Plotter(n_cols, self.eval_log_dir, self.num_eval_processes, max_steps=self.args.max_step)
-        eval_cols = range(-1, n_cols)
+        eval_cols = list(range(-1, n_cols))
         if args.model == 'fixed' and model.RAND:
             eval_cols = model.eval_recs
         if eval_cols is not None:
@@ -187,7 +187,7 @@ class Evaluator(object):
             eval_masks = torch.FloatTensor([[0.0] if done_ else [1.0]
                                             for done_ in done])
             for info in infos:
-                if 'episode' in info.keys():
+                if 'episode' in list(info.keys()):
                     eval_episode_rewards.append(info['episode']['r'])
             i += 1
 
@@ -204,15 +204,15 @@ class Evaluator(object):
         if num_recursions is not None:
             column = num_recursions
         if column is not None:
-            print(" Column {}".format(column))
+            print((" Column {}".format(column)))
             log_info = {'r': round(eprew, 6),  'l': n_frame, 't': round(time.time() - self.tstart, 6)}
             writer, log_file = getattr(self, 'writer_col_{}'.format(column)),\
                                getattr(self, 'log_file_col_{}'.format(column))
             writer.writerow(log_info)
             log_file.flush()
-            print(" Evaluation using {} episodes: mean reward {:.5f}\n".
+            print((" Evaluation using {} episodes: mean reward {:.5f}\n".
                 format(len(eval_episode_rewards),
-                   eprew))
+                   eprew)))
 
         if self.frozen:
             if args.vis:

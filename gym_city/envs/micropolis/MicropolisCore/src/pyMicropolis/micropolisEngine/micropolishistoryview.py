@@ -69,10 +69,10 @@
 # Import stuff
 
 
-from gi.repository import Gtk as gtk
+import gtk
 import cairo
-from gi.repository import Pango as pango
-from . import micropolisengine
+import pango
+import micropolisengine
 from . import micropolisview
 
 
@@ -351,10 +351,8 @@ class MicropolisHistoryView(micropolisview.MicropolisView):
 
             ctx.stroke()
 
-            #print("HISTORY LEGENDS: ", historyLegends)
             label = historyLegends[i]
-            #print("LABEL: ", label)
-            playout.set_text(label, -1)
+            playout.set_text(label)
             labelWidth, labelHeight = playout.get_pixel_size()
 
             xx = boxX + (boxWidth / 2) - (labelWidth / 2)
@@ -393,7 +391,7 @@ class MicropolisHistoryView(micropolisview.MicropolisView):
             rgb = (0.5, 0.5, 1)
             label = '120 Years'
         else:
-            print(("Invalid historyScale:", historyScale))
+            print("Invalid historyScale:", historyScale)
             rgb = (1, 0, 0)
             label = '???'
 
@@ -418,7 +416,7 @@ class MicropolisHistoryView(micropolisview.MicropolisView):
 
         ctx.stroke()
 
-        playout.set_text(label, -1)
+        playout.set_text(label)
         labelWidth, labelHeight = playout.get_pixel_size()
 
         xx = 0 + (scaleWidth / 2) - (labelWidth / 2)
@@ -566,14 +564,14 @@ class MicropolisHistoryView(micropolisview.MicropolisView):
         elif historyScale == micropolisengine.HISTORY_SCALE_LONG:
 
             sx /= 10
-            past = int(10 * (year % 10))
+            past = 10 * (year % 10)
             year = int(year / 10) * 10
             dur = 1200
-            r = list(range(dur - past, -1, int(-dur / 10)))
+            r = list(range(dur - past, -1, -dur / 10))
 
         else:
 
-            print(("Invalid historyScale:", historyScale))
+            print("Invalid historyScale:", historyScale)
             dur = 120
             r = ()
 
@@ -603,7 +601,7 @@ class MicropolisHistoryView(micropolisview.MicropolisView):
                 label = str(year)
                 year -= 10
 
-            playout.set_text(label, -1)
+            playout.set_text(label)
             labelWidth, labelHeight = playout.get_pixel_size()
 
             xx = x + 4
@@ -658,7 +656,7 @@ class MicropolisHistoryView(micropolisview.MicropolisView):
                 elif self.historyScale == micropolisengine.HISTORY_SCALE_LONG:
                     self.historyScale = micropolisengine.HISTORY_SCALE_SHORT
                 else:
-                    print(("Invalid history scale", self.historyScale))
+                    print("Invalid history scale", self.historyScale)
 
             elif targetType == 'legend':
 

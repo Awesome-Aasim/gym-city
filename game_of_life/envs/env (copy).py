@@ -171,7 +171,7 @@ class GameOfLifeEnv(core.Env):
                         self.intsToActions[i] = [z, x, y]
                         self.actionsToInts[z, x, y] = i
                         i += 1
-        print('len of intsToActions: {}\n num tools: {}'.format(len(self.intsToActions), self.num_tools))
+        print(('len of intsToActions: {}\n num tools: {}'.format(len(self.intsToActions), self.num_tools)))
         self.bern_dist = None
 
     def init_world(self, size, channels, prob):
