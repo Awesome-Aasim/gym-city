@@ -10,7 +10,7 @@ multip_test.py
 *.egg-info/*
 
 *__pycache__
-
+*objs/*
 trained_models*
 runs*
 # notes*
