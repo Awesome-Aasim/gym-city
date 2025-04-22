@@ -40,7 +40,7 @@ RUN make install
 
 # This throws an error---I think because there is no way to render, neither from here nor an interactive shell.
 # Instead, launch an interactive shell, then connect to the running container via the VSCode Dev Container extension,
-# *then* run this coxmmand. This way, the GUI is able to render.
+# *then* run this command. This way, the GUI is able to render.
 CMD python3 tilemap_test.py
 
 

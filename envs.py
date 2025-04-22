@@ -208,7 +208,7 @@ def make_env(env_id, seed, rank, log_dir, add_timestep, allow_early_resets, map_
                     ages = True
                 else:
                     ages = False
-                env.setMapSize(map_width, print_map=print_map, render_gui=False,
+                env.setMapSize(map_width, print_map=print_map, render_gui=render,
                         empty_start=not args.random_terrain, max_step=max_step,
                         rank=rank,
                         power_puzzle=power_puzzle,
