@@ -1,5 +1,4 @@
 from gym_city.envs.env import MicropolisEnv
-from gi.repository import Gtk
 
 m = MicropolisEnv()
 m.setMapSize(20)
@@ -14,20 +13,19 @@ while go:
             print("KeyError")
             m.printMap()
             m.micro.printTileMap()
-            m.render()
-            Gtk.main()
+            # m.render()  # GUI not supported in Docker
             break
         except AssertionError:
             print("AssertionError")
             m.printMap()
             m.micro.printTileMap()
-            m.render()
-            Gtk.main()
+            # m.render()  # GUI not supported in Docker
             break
 
         m.printMap()
-#       m.micro.printTileMap()
-        m.render()
-    go = True
+        # m.micro.printTileMap()
+        # m.render()  # GUI not supported in Docker
 
-Gtk.main()
+    go = False  # Set to False to prevent infinite loop
+
+# Gtk.main()  # Remove this since there's no GUI
