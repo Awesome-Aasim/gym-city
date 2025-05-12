@@ -226,6 +226,7 @@ class MicropolisControl():
                 density_maps[2] = self.fillDensityMap(density_maps[2], i, j, t_xy_density)
                 pop_xy_density = self.engine.getPopulationDensity(p_jm, p_im)
                 density_maps[1] = self.fillDensityMap(density_maps[1], i, j, pop_xy_density)
+                self.land_value += self.engine.getLandValue(im, jm)
         for i in range(self.MAP_X):
             for j in range(self.MAP_Y):
                 im = i
@@ -233,7 +234,6 @@ class MicropolisControl():
                 im += self.MAP_YS
                 jm += self.MAP_XS
                 density_maps[0][i][j] = self.engine.getPowerGrid(jm, im)
-               #self.land_value += self.engine.getLandValue(im, jm)
        #if self.total_traffic > 0:
        #    print('TRAFFIC: {}'.format(self.total_traffic))
         return density_maps
