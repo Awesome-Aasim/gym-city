@@ -16,9 +16,10 @@ from gi.repository import Gtk
 MAP_WIDTH = 16            # width and height of the square map
 default_SIM_STEPS = 1000  # simulation ticks per evaluation
 POPULATION_SIZE = 50      # number of genomes per generation
-GENERATIONS = 1000        # total MAP-Elites generations to run
-GRID_BINS = 10            # resolution of the 2D archive
-MUTATIONS_PER_CHILD = 5   # how many tiles to randomly flip per child
+GENERATIONS = 1000       # total MAP-Elites generations to run
+GRID_BINS = 5            # resolution of the 2D archive
+MUTATIONS_PER_CHILD = 1   # how many tiles to randomly flip per child
+sum_fitnesses = []
 
 csvoutput = "Generation,Population\n"
 env = MicropolisEnv()
@@ -65,12 +66,14 @@ def evaluate(genome, sim_steps=default_SIM_STEPS, csvoutput=csvoutput):
         env.render()
         env.postact()
     env.micro.getDensityMaps()
-    fitness = env.getPop()
+    fitness = env.getPop() 
     print(str(generation) + "," + str(env.getPop()))
     generation += 1
     csvoutput += str(i) + "," + str(env.getPop()) + "\n"
-    desc1 = env.micro.total_traffic
-    desc2 = env.micro.land_value
+    # desc1 = env.micro.total_traffic
+    # desc2 = env.micro.land_value
+    desc1 = env.micro.pollution
+    desc2 = env.micro.crimerate
     return fitness, desc1, desc2
 
 
@@ -111,8 +114,10 @@ def main( csvoutput=csvoutput, generation=generation ):
     #     d2_vals.append(d2)
     # min_d1, max_d1 = min(d1_vals), max(d1_vals)
     # min_d2, max_d2 = min(d2_vals), max(d2_vals)
+
+    # traffic 500; land value 2000;
     min_d1, max_d1 = 0, 500
-    min_d2, max_d2 = 0, 3000
+    min_d2, max_d2 = 0, 2000
 
     # 4. MAP-Elites main loop
     env.render()
@@ -146,13 +151,14 @@ def main( csvoutput=csvoutput, generation=generation ):
             fit, d1, d2 = evaluate(genome)
             x = cell_index(d1, min_d1, max_d1)
             y = cell_index(d2, min_d2, max_d2)
-            if fit > fitnesses[x][y]:
+            if fit >= fitnesses[x][y]:
                 archive[x][y]   = genome
                 fitnesses[x][y] = fit
 
+        sum_fitnesses.append(sum([sum(row) for row in fitnesses]))
         filled = sum(1 for row in archive for g in row if g is not None)
-        print(f"Generation {gen}: {filled}/{GRID_BINS * GRID_BINS} cells filled\n" 
-        f"fitnesses: {fitnesses}")
+        print(f"Generation {gen}: {filled}/{GRID_BINS * GRID_BINS} cells filled")
+        # f"fitnesses: {fitnesses}"
        
         # 5. Create next generation by mutating existing elites
         elites = [g for row in archive for g in row if g is not None]
@@ -161,7 +167,9 @@ def main( csvoutput=csvoutput, generation=generation ):
             population = [init_genome() for _ in range(POPULATION_SIZE)]
         else:
             population = [mutate(random.choice(elites)) for _ in range(POPULATION_SIZE)]
-    
+    with open('output.txt', 'w', encoding='utf-8') as f:
+        f.write(' '.join(map(str, sum_fitnesses)))
+
     max_value = float('-inf')
     max_pos = (-1, -1) 
 
@@ -173,6 +181,9 @@ def main( csvoutput=csvoutput, generation=generation ):
 
     best = archive[max_pos[0]][max_pos[1]]
     f, d1, d2 = evaluate(best)
+    with open('lastfitnesses.txt', 'w', encoding='utf-8') as f:
+        for row in fitnesses:
+            f.write(" ".join(map(str, row)) + "\n")
     print(d1, d2)
     with open("output.csv", "w") as file:
         file.write(csvoutput)

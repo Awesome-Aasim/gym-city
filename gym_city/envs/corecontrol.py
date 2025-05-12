@@ -116,6 +116,8 @@ class MicropolisControl():
         self.engine.autoBulldoze = True
         # for bots
         self.land_value = 0
+        self.pollution = 0
+        self.crimerate = 0
 
        #win1.playCity()
         if win1:
@@ -213,7 +215,9 @@ class MicropolisControl():
         return density_map
 
     def getDensityMaps(self):
-       #self.last_pollution = self.pollution
+        # self.last_pollution = self.pollution
+        self.crimerate = 0
+        self.pollution = 0
         self.total_traffic = 0
         self.land_value = 0
         density_maps = np.zeros((3, self.MAP_X, self.MAP_Y))
@@ -227,6 +231,9 @@ class MicropolisControl():
                 pop_xy_density = self.engine.getPopulationDensity(p_jm, p_im)
                 density_maps[1] = self.fillDensityMap(density_maps[1], i, j, pop_xy_density)
                 self.land_value += self.engine.getLandValue(im, jm)
+                self.pollution += self.engine.getPollutionDensity(im, jm)
+                self.crimerate += self.engine.getCrimeRate(im, jm)
+
         for i in range(self.MAP_X):
             for j in range(self.MAP_Y):
                 im = i
