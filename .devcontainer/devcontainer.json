@@ -8,7 +8,10 @@
 		// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
 		"dockerfile": "../Dockerfile"
 	},
-	"workspaceFolder": "/usr/src/app"
+	"workspaceFolder": "/usr/src/app",
+	"mounts": [
+		"source=${localWorkspaceFolder},target=/usr/src/app,type=bind,consistency=cached"
+	]
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
