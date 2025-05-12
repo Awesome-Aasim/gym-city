@@ -14,13 +14,14 @@ from gi.repository import Gtk
 
 # === PARAMETERS ===
 MAP_WIDTH = 16            # width and height of the square map
-default_SIM_STEPS = 1000  # simulation ticks per evaluation
+default_SIM_STEPS = 100   # simulation ticks per evaluation
 POPULATION_SIZE = 50      # number of genomes per generation
-GENERATIONS = 1000       # total MAP-Elites generations to run
-GRID_BINS = 5            # resolution of the 2D archive
+GENERATIONS = 100         # total MAP-Elites generations to run
+GRID_BINS = 5             # resolution of the 2D archive
 MUTATIONS_PER_CHILD = 1   # how many tiles to randomly flip per child
 sum_fitnesses = []
 HEADLESS = True
+LIVE = False
 
 csvoutput = "Genome," + "," + ",".join([str(i) for i in range(GENERATIONS)]) + "\n"
 csvtable = []
@@ -50,7 +51,7 @@ def genome_to_layout(genome):
             x = idx % MAP_WIDTH
             y = idx // MAP_WIDTH
             env.micro.takeAction([tile_type, x, y])
-        if not HEADLESS:
+        if not HEADLESS and LIVE:
             env.render()
 
 
@@ -166,7 +167,8 @@ def main( csvoutput=csvoutput, csvtable=csvtable ):
             x = cell_index(d1, min_d1, max_d1)
             y = cell_index(d2, min_d2, max_d2)
             csvtable[nome] += str(fit)
-            print(f"Generation:{gen}\tGenome:{nome}\tFitness:{fit}")
+            if not HEADLESS:
+                print(f"Generation:{gen}\tGenome:{nome}\tFitness:{fit}")
             nome += 1
             if fit >= fitnesses[x][y]:
                 archive[x][y]   = genome
