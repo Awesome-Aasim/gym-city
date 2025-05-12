@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+
 # === Define behavior ranges for normalization ===
 BEHAVIOR_RANGES = {
     "pop": [0, 1000],        # Population range

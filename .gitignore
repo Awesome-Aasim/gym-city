@@ -1,5 +1,6 @@
 multip_test.py
 
+objs
 **TileEngine/objs/*
 **CellEngine/objs/*
 **MicropolisEngine/objs/*
@@ -33,3 +34,6 @@ runs*
 .idea
 *egg-info
 .venv
+gym_city/envs/micropolis/MicropolisCore/src/pyMicropolis/cellEngine/cellengine.py
+gym_city/envs/micropolis/MicropolisCore/src/pyMicropolis/tileEngine/tileengine.py
+gym_city/envs/micropolis/MicropolisCore/src/pyMicropolis/micropolisEngine/micropolisengine.py
