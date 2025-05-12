@@ -581,3 +581,9 @@ class MicropolisEnv(core.Env):
 
     def set_rating_weight(self,val):
         self.city_trgs['mayor_rating'] = val
+
+    def getPopulation(self):
+        return self.micro.getTotPop()
+        
+    def getTraffic(self):
+        return self.micro.total_traffic

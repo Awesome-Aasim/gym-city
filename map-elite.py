@@ -5,19 +5,23 @@ Generates diverse city layouts across pollution and traffic descriptors.
 """
 import random
 import numpy as np
+import time
+import asyncio
+import threading
 from gym_city.envs.env import MicropolisEnv
 
 from gi.repository import Gtk
 
 # === PARAMETERS ===
 MAP_WIDTH = 16            # width and height of the square map
-default_SIM_STEPS = 100   # simulation ticks per evaluation
+default_SIM_STEPS = 1000  # simulation ticks per evaluation
 POPULATION_SIZE = 50      # number of genomes per generation
-GENERATIONS = 500       # total MAP-Elites generations to run
+GENERATIONS = 1000       # total MAP-Elites generations to run
 GRID_BINS = 5            # resolution of the 2D archive
 MUTATIONS_PER_CHILD = 1   # how many tiles to randomly flip per child
 sum_fitnesses = []
 
+csvoutput = "Generation,Population\n"
 env = MicropolisEnv()
 env.setMapSize(MAP_WIDTH)
 
@@ -44,9 +48,11 @@ def genome_to_layout(genome):
             x = idx % MAP_WIDTH
             y = idx // MAP_WIDTH
             env.micro.takeAction([tile_type, x, y])
+        env.render()
 
+generation = 0
 
-def evaluate(genome, sim_steps=default_SIM_STEPS):
+def evaluate(genome, sim_steps=default_SIM_STEPS, csvoutput=csvoutput):
     """
     Build the city from genome, run for sim_steps ticks,
     and return (fitness, descriptor1, descriptor2).
@@ -56,10 +62,14 @@ def evaluate(genome, sim_steps=default_SIM_STEPS):
     """
     env.reset()
     genome_to_layout(genome)
-    for _ in range(sim_steps):
+    for i in range(sim_steps):
+        env.render()
         env.postact()
     env.micro.getDensityMaps()
     fitness = env.getPop() 
+    print(str(generation) + "," + str(env.getPop()))
+    generation += 1
+    csvoutput += str(i) + "," + str(env.getPop()) + "\n"
     # desc1 = env.micro.total_traffic
     # desc2 = env.micro.land_value
     desc1 = env.micro.pollution
@@ -86,8 +96,9 @@ def mutate(genome, num_mutations=MUTATIONS_PER_CHILD):
         child[i] = random.randrange(0, 20)
     return child
 
-
-def main():
+def main( csvoutput=csvoutput, generation=generation ):
+    with open("output.csv", "w") as file:
+        file.write("")
     # 1. Initialize empty archive and fitness grid
     archive = [[None for _ in range(GRID_BINS)] for _ in range(GRID_BINS)]
     fitnesses = [[-1          for _ in range(GRID_BINS)] for _ in range(GRID_BINS)]
@@ -109,7 +120,33 @@ def main():
     min_d2, max_d2 = 0, 2000
 
     # 4. MAP-Elites main loop
+    env.render()
+    print("30 seconds to prepare a screen capture...")
+    time.sleep(10)
+    print("20 seconds to prepare a screen capture...")
+    time.sleep(10)
+    print("10 seconds to prepare a screen capture...")
+    time.sleep(1)
+    print("9 seconds to prepare a screen capture...")
+    time.sleep(1)
+    print("8 seconds to prepare a screen capture...")
+    time.sleep(1)
+    print("7 seconds to prepare a screen capture...")
+    time.sleep(1)
+    print("6 seconds to prepare a screen capture...")
+    time.sleep(1)
+    print("5 seconds to prepare a screen capture...")
+    time.sleep(1)
+    print("4 seconds to prepare a screen capture...")
+    time.sleep(1)
+    print("3 seconds to prepare a screen capture...")
+    time.sleep(1)
+    print("2 seconds to prepare a screen capture...")
+    time.sleep(1)
+    print("1 seconds to prepare a screen capture...")
+    time.sleep(1)
     for gen in range(GENERATIONS):
+        generation = gen
         for genome in population:
             fit, d1, d2 = evaluate(genome)
             x = cell_index(d1, min_d1, max_d1)
@@ -130,7 +167,6 @@ def main():
             population = [init_genome() for _ in range(POPULATION_SIZE)]
         else:
             population = [mutate(random.choice(elites)) for _ in range(POPULATION_SIZE)]
-
     with open('output.txt', 'w', encoding='utf-8') as f:
         f.write(' '.join(map(str, sum_fitnesses)))
 
@@ -148,7 +184,10 @@ def main():
     with open('lastfitnesses.txt', 'w', encoding='utf-8') as f:
         for row in fitnesses:
             f.write(" ".join(map(str, row)) + "\n")
-    env.render()
+    print(d1, d2)
+    with open("output.csv", "w") as file:
+        file.write(csvoutput)
+    exit()
 
 if __name__ == "__main__":
     main()
