@@ -20,8 +20,10 @@ GENERATIONS = 1000       # total MAP-Elites generations to run
 GRID_BINS = 5            # resolution of the 2D archive
 MUTATIONS_PER_CHILD = 1   # how many tiles to randomly flip per child
 sum_fitnesses = []
+HEADLESS = True
 
-csvoutput = "Generation,Population\n"
+csvoutput = "Genome," + "," + ",".join([str(i) for i in range(GENERATIONS)]) + "\n"
+csvtable = []
 env = MicropolisEnv()
 env.setMapSize(MAP_WIDTH)
 
@@ -48,9 +50,9 @@ def genome_to_layout(genome):
             x = idx % MAP_WIDTH
             y = idx // MAP_WIDTH
             env.micro.takeAction([tile_type, x, y])
-        env.render()
+        if not HEADLESS:
+            env.render()
 
-generation = 0
 
 def evaluate(genome, sim_steps=default_SIM_STEPS, csvoutput=csvoutput):
     """
@@ -63,13 +65,11 @@ def evaluate(genome, sim_steps=default_SIM_STEPS, csvoutput=csvoutput):
     env.reset()
     genome_to_layout(genome)
     for i in range(sim_steps):
-        env.render()
         env.postact()
+    if not HEADLESS:
+        env.render()
     env.micro.getDensityMaps()
-    fitness = env.getPop() 
-    print(str(generation) + "," + str(env.getPop()))
-    generation += 1
-    csvoutput += str(i) + "," + str(env.getPop()) + "\n"
+    fitness = env.getPop()
     # desc1 = env.micro.total_traffic
     # desc2 = env.micro.land_value
     desc1 = env.micro.pollution
@@ -96,7 +96,7 @@ def mutate(genome, num_mutations=MUTATIONS_PER_CHILD):
         child[i] = random.randrange(0, 20)
     return child
 
-def main( csvoutput=csvoutput, generation=generation ):
+def main( csvoutput=csvoutput, csvtable=csvtable ):
     with open("output.csv", "w") as file:
         file.write("")
     # 1. Initialize empty archive and fitness grid
@@ -120,46 +120,63 @@ def main( csvoutput=csvoutput, generation=generation ):
     min_d2, max_d2 = 0, 2000
 
     # 4. MAP-Elites main loop
-    env.render()
-    print("30 seconds to prepare a screen capture...")
-    time.sleep(10)
-    print("20 seconds to prepare a screen capture...")
-    time.sleep(10)
-    print("10 seconds to prepare a screen capture...")
-    time.sleep(1)
-    print("9 seconds to prepare a screen capture...")
-    time.sleep(1)
-    print("8 seconds to prepare a screen capture...")
-    time.sleep(1)
-    print("7 seconds to prepare a screen capture...")
-    time.sleep(1)
-    print("6 seconds to prepare a screen capture...")
-    time.sleep(1)
-    print("5 seconds to prepare a screen capture...")
-    time.sleep(1)
-    print("4 seconds to prepare a screen capture...")
-    time.sleep(1)
-    print("3 seconds to prepare a screen capture...")
-    time.sleep(1)
-    print("2 seconds to prepare a screen capture...")
-    time.sleep(1)
-    print("1 seconds to prepare a screen capture...")
-    time.sleep(1)
+    stopupdate = False
+    def update():
+        while not stopupdate:
+            if not HEADLESS:
+                env.render()
+    if not HEADLESS:
+        thread = threading.Thread(target=update)
+        thread.start()
+        print("30 seconds to prepare a screen capture...")
+        time.sleep(10)
+        print("20 seconds to prepare a screen capture...")
+        time.sleep(10)
+        print("10 seconds to prepare a screen capture...")
+        time.sleep(1)
+        print("9 seconds to prepare a screen capture...")
+        time.sleep(1)
+        print("8 seconds to prepare a screen capture...")
+        time.sleep(1)
+        print("7 seconds to prepare a screen capture...")
+        time.sleep(1)
+        print("6 seconds to prepare a screen capture...")
+        time.sleep(1)
+        print("5 seconds to prepare a screen capture...")
+        time.sleep(1)
+        print("4 seconds to prepare a screen capture...")
+        time.sleep(1)
+        print("3 seconds to prepare a screen capture...")
+        time.sleep(1)
+        print("2 seconds to prepare a screen capture...")
+        time.sleep(1)
+        print("1 seconds to prepare a screen capture...")
+        time.sleep(1)
+        stopupdate = True
+        thread.join()
+    firsttable = True
     for gen in range(GENERATIONS):
-        generation = gen
+        nome = 0
         for genome in population:
+            if firsttable:
+                csvtable.append(str(nome) + ",")
+            else:
+                csvtable[nome] += ","
             fit, d1, d2 = evaluate(genome)
             x = cell_index(d1, min_d1, max_d1)
             y = cell_index(d2, min_d2, max_d2)
+            csvtable[nome] += str(fit)
+            print(f"Generation:{gen}\tGenome:{nome}\tFitness:{fit}")
+            nome += 1
             if fit >= fitnesses[x][y]:
                 archive[x][y]   = genome
                 fitnesses[x][y] = fit
-
+        firsttable = False
         sum_fitnesses.append(sum([sum(row) for row in fitnesses]))
         filled = sum(1 for row in archive for g in row if g is not None)
         print(f"Generation {gen}: {filled}/{GRID_BINS * GRID_BINS} cells filled")
         # f"fitnesses: {fitnesses}"
-       
+
         # 5. Create next generation by mutating existing elites
         elites = [g for row in archive for g in row if g is not None]
         if not elites:
@@ -171,7 +188,7 @@ def main( csvoutput=csvoutput, generation=generation ):
         f.write(' '.join(map(str, sum_fitnesses)))
 
     max_value = float('-inf')
-    max_pos = (-1, -1) 
+    max_pos = (-1, -1)
 
     for i, row in enumerate(fitnesses):
         for j, value in enumerate(row):
@@ -185,6 +202,7 @@ def main( csvoutput=csvoutput, generation=generation ):
         for row in fitnesses:
             f.write(" ".join(map(str, row)) + "\n")
     print(d1, d2)
+    csvoutput += "\n".join(csvtable)
     with open("output.csv", "w") as file:
         file.write(csvoutput)
     exit()
